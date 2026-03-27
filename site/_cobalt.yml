@@ -1,0 +1,4 @@
+site:
+  title: Thulpoff — Skill Distillation for AI Agents
+  description: Generate, evaluate, and refine SKILL.md files using teacher-student model distillation
+  base_url: https://dirmacs.github.io/thulpoff
