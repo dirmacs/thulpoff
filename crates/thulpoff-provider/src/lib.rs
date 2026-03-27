@@ -1,6 +1,13 @@
 //! thulpoff-provider — LLM provider implementations.
 //!
-//! Wraps ares-server's LLM infrastructure for skill distillation.
-//! Supports: Anthropic (Claude), OpenAI, Ollama, local models via ares.
+//! Concrete implementations of `LlmProvider` for skill distillation:
+//! - `AnthropicProvider` — Claude models via Anthropic Messages API
+//! - `NimProvider` — NVIDIA NIM models (Mistral, Llama, etc.)
 
 pub use thulpoff_core::{CompletionRequest, CompletionResponse, LlmProvider};
+
+mod anthropic;
+mod nim;
+
+pub use anthropic::AnthropicProvider;
+pub use nim::NimProvider;
