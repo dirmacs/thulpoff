@@ -24,7 +24,16 @@ The workflow:
 
 ## Status
 
-**Pre-development** - This project is in the design phase. Implementation will begin after the `thulp-skill-files` crate is available in the thulp ecosystem.
+**Active development** — Core crates implemented:
+
+| Crate | Status | Tests |
+|-------|--------|-------|
+| thulpoff-core | Types, traits, LlmProvider | 8 |
+| thulpoff-provider | AnthropicProvider, NimProvider | 8 |
+| thulpoff-engine | GenerationEngine, EvaluationEngine, RefinementEngine | 14 |
+| thulpoff-cli | generate, eval, refine, list commands | 6 |
+
+**Total: 36 tests.** All engines functional with mock + real providers.
 
 See [DEPENDENCIES.md](./docs/DEPENDENCIES.md) for prerequisites.
 
