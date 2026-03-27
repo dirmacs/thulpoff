@@ -62,13 +62,14 @@
 </div>
 <div class="section">
     <h2>Quick Start</h2>
-    <pre><code>thulpoff generate "Write an optimized sorting algorithm" \
-  --model claude-opus-4-6 --provider anthropic
-<p>thulpoff eval ./skills/sorting/SKILL.md <br />
---model mistralai/mistral-small-24b-instruct-2501 --provider nim</p>
-<p>thulpoff runs sorting</p>
-<p>thulpoff refine ./skills/sorting/SKILL.md <br />
---model claude-opus-4-6 --provider anthropic</code></pre></p>
+    <pre><code># Generate a skill from a teacher session
+thulpoff generate "Write an optimized sorting algorithm" --model claude-opus-4-6 --provider anthropic
+# Evaluate with a student model
+thulpoff eval ./skills/sorting/SKILL.md --model mistralai/mistral-small-24b-instruct-2501 --provider nim
+# View run history
+thulpoff runs sorting
+# Refine based on failures
+thulpoff refine ./skills/sorting/SKILL.md --model claude-opus-4-6 --provider anthropic</code></pre>
 </div>
 <div class="section">
     <h2>Ecosystem</h2>
