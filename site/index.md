@@ -38,16 +38,14 @@ title: Thulpoff — Skill Distillation for AI Agents
 
 <div class="section">
     <h2>Quick Start</h2>
-    <pre><code>thulpoff generate "Write an optimized sorting algorithm" \
-  --model claude-opus-4-6 --provider anthropic
-
-thulpoff eval ./skills/sorting/SKILL.md \
-  --model mistralai/mistral-small-24b-instruct-2501 --provider nim
-
+    <pre><code># Generate a skill from a teacher session
+thulpoff generate "Write an optimized sorting algorithm" --model claude-opus-4-6 --provider anthropic
+# Evaluate with a student model
+thulpoff eval ./skills/sorting/SKILL.md --model mistralai/mistral-small-24b-instruct-2501 --provider nim
+# View run history
 thulpoff runs sorting
-
-thulpoff refine ./skills/sorting/SKILL.md \
-  --model claude-opus-4-6 --provider anthropic</code></pre>
+# Refine based on failures
+thulpoff refine ./skills/sorting/SKILL.md --model claude-opus-4-6 --provider anthropic</code></pre>
 </div>
 
 <div class="section">
