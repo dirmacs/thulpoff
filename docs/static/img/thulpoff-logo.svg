@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="flask" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="50%" stop-color="#5b21b6"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+    <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Flask body (distillation vessel) -->
+  <path d="M48 42 L48 60 Q28 80 32 100 Q36 118 64 118 Q92 118 96 100 Q100 80 80 60 L80 42"
+    stroke="url(#flask)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Flask neck -->
+  <rect x="48" y="28" width="32" height="16" rx="2" stroke="url(#flask)" stroke-width="3" fill="none"/>
+  <!-- Liquid inside -->
+  <path d="M36 96 Q38 110 64 112 Q90 110 92 96 Q88 84 76 76 L76 58 L52 58 L52 76 Q40 84 36 96Z"
+    fill="url(#liquid)" opacity="0.4"/>
+  <!-- Bubbles (distillation in progress) -->
+  <circle cx="56" cy="90" r="3" fill="url(#glow)" opacity="0.6"/>
+  <circle cx="68" cy="82" r="2.5" fill="url(#glow)" opacity="0.5"/>
+  <circle cx="72" cy="96" r="3.5" fill="url(#glow)" opacity="0.4"/>
+  <circle cx="58" cy="76" r="2" fill="url(#glow)" opacity="0.7"/>
+  <!-- Down arrow (distillation direction) -->
+  <path d="M64 16 L64 26" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M58 22 L64 28 L70 22" stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Highlight on flask -->
+  <path d="M50 50 L50 62 Q38 76 40 90" stroke="white" stroke-width="1.5" fill="none" opacity="0.15" stroke-linecap="round"/>
+</svg>
