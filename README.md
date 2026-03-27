@@ -1,96 +1,151 @@
-# thulpoff
+<h1 align="center">Thulpoff</h1>
 
-> Rust implementation of skill distillation for AI agents
+<p align="center">
+  Skill distillation for AI agents.<br>
+  Generate, evaluate, and refine SKILL.md files using teacher-student model distillation.
+</p>
 
-**thulpoff** is a Rust crate that implements HuggingFace's [upskill](https://github.com/huggingface/upskill) paradigm - a teacher-student model skill distillation framework. It generates, evaluates, and refines `SKILL.md` files that can be used with Claude Code, thulp, or any agent supporting the skill file format.
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT%2FApache--2.0-yellow.svg" alt="License">
+</p>
 
-## What is Skill Distillation?
+---
 
-Skill distillation is the process of capturing domain expertise from a capable "teacher" model (like Claude Sonnet or GPT-4o) and encoding it into structured skill files that can enhance the performance of smaller, faster "student" models (like Haiku, Qwen, or local LLMs).
+**Thulpoff** captures domain expertise from capable "teacher" models and encodes it into structured skill files that enhance smaller "student" models. It implements the [upskill](https://github.com/huggingface/upskill) paradigm in Rust — generation, evaluation, and iterative refinement of `SKILL.md` files compatible with [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills), [thulp](https://github.com/dirmacs/thulp), or any agent supporting the skill format.
 
-The workflow:
-1. **Teacher demonstrates** - A capable model solves a challenging task
-2. **Skill extraction** - The solution patterns are distilled into a SKILL.md file
-3. **Test generation** - Test cases are created to validate skill effectiveness
-4. **Student evaluation** - Student models are evaluated with and without the skill
-5. **Refinement** - The skill is iteratively improved based on failure analysis
+Built by [DIRMACS](https://dirmacs.com).
 
-## Why Rust?
-
-- **Performance** - Fast evaluation harness for running many test cases
-- **Dirmacs ecosystem** - Integrates with [thulp](https://github.com/dirmacs/thulp), [ares](https://github.com/dirmacs/ares), [lancor](https://github.com/dirmacs/lancor)
-- **Type safety** - Strong types for skill files, test cases, and evaluation results
-- **Cross-platform** - Single binary distribution
-
-## Status
-
-**Active development** — Core crates implemented:
-
-| Crate | Status | Tests |
-|-------|--------|-------|
-| thulpoff-core | Types, traits, LlmProvider | 8 |
-| thulpoff-provider | AnthropicProvider, NimProvider | 8 |
-| thulpoff-engine | GenerationEngine, EvaluationEngine, RefinementEngine | 14 |
-| thulpoff-cli | generate, eval, refine, list commands | 6 |
-
-**Total: 36 tests.** All engines functional with mock + real providers.
-
-See [DEPENDENCIES.md](./docs/DEPENDENCIES.md) for prerequisites.
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System design and component overview |
-| [CLI.md](./docs/CLI.md) | Command-line interface reference |
-| [TYPES.md](./docs/TYPES.md) | Core data types and structures |
-| [PROVIDERS.md](./docs/PROVIDERS.md) | LLM provider specifications |
-| [DEPENDENCIES.md](./docs/DEPENDENCIES.md) | thulp prerequisites and integration |
-| [ROADMAP.md](./docs/ROADMAP.md) | Implementation phases and timeline |
-| [EXAMPLES.md](./docs/EXAMPLES.md) | Usage examples and workflows |
-
-## Quick Preview
+## Install
 
 ```bash
-# Generate a CUDA kernel optimization skill using Claude as teacher
-thulpoff generate \
-  --task "Write an optimized CUDA kernel for matrix multiplication" \
-  --name cuda-matmul \
-  --model claude-sonnet-4-20250514 \
-  --test-cases 10
-
-# Evaluate the skill with a smaller model
-thulpoff eval \
-  --skill cuda-matmul \
-  --model claude-3-5-haiku-20241022 \
-  --baseline
-
-# Evaluate with local model via Ollama
-thulpoff eval \
-  --skill cuda-matmul \
-  --model qwen2.5-coder:32b \
-  --provider openai-compat \
-  --base-url http://localhost:11434/v1
-
-# List all skills with evaluation results
-thulpoff list --with-results
+cargo install thulpoff-cli
 ```
+
+```toml
+# Or as a library
+[dependencies]
+thulpoff-core = "0.1"
+thulpoff-engine = "0.1"
+thulpoff-provider = "0.1"
+```
+
+## Why Thulpoff?
+
+Small models can match large models on specific tasks — if given the right instructions. But writing those instructions is manual and brittle. Thulpoff automates the loop:
+
+1. **Teacher demonstrates** — a capable model solves a task
+2. **Skill extraction** — solution patterns are distilled into SKILL.md
+3. **Test generation** — test cases validate the skill works
+4. **Student evaluation** — smaller models are scored with the skill
+5. **Refinement** — failures feed back to improve the skill
+
+No manual prompt engineering. The teacher teaches, the student learns, the skill improves.
+
+## Workspace (4 crates)
+
+| Crate | What | Tests |
+|-------|------|-------|
+| **thulpoff-core** | Types, traits, LlmProvider, CompletionRequest/Response | 8 |
+| **thulpoff-provider** | AnthropicProvider (Claude API), NimProvider (NVIDIA NIM) | 8 |
+| **thulpoff-engine** | GenerationEngine, EvaluationEngine, RefinementEngine | 14 |
+| **thulpoff-cli** | generate, eval, refine, list commands | 6 |
+
+## Quick Start
+
+### Generate a skill
+
+```bash
+thulpoff generate \
+  "Write an optimized sorting algorithm" \
+  --model claude-opus-4-6 \
+  --provider anthropic \
+  --output ./skills/
+```
+
+### Evaluate with a student model
+
+```bash
+thulpoff eval \
+  ./skills/optimized-sorting/SKILL.md \
+  --model mistralai/mistral-small-24b-instruct-2501 \
+  --provider nim
+```
+
+### Refine based on failures
+
+```bash
+thulpoff refine \
+  ./skills/optimized-sorting/SKILL.md \
+  --model claude-opus-4-6 \
+  --provider anthropic
+```
+
+### List available skills
+
+```bash
+thulpoff list --dir ./skills/
+```
+
+## Providers
+
+| Provider | Models | Auth |
+|----------|--------|------|
+| `anthropic` | Claude Opus, Sonnet, Haiku | `ANTHROPIC_API_KEY` |
+| `nim` | Mistral, Llama, Nemotron via NVIDIA NIM | `NVIDIA_API_KEY` |
+
+## Architecture
+
+```
+thulpoff/
+  crates/
+    thulpoff-core/      # types, traits, LlmProvider interface
+    thulpoff-provider/  # Anthropic + NIM provider implementations
+    thulpoff-engine/    # generation, evaluation, refinement engines
+    thulpoff-cli/       # clap CLI with provider selection
+  docs/                 # architecture, CLI reference, types, roadmap
+  reference/            # upskill Python reference (temporary)
+```
+
+### The Distillation Loop
+
+```
+TeacherSession ──→ GenerationEngine ──→ GeneratedSkill
+                                            │
+                                            ▼
+                                     EvaluationEngine ──→ EvaluationResult
+                                            │
+                                      ┌─────┴─────┐
+                                      │ score < 1  │
+                                      └─────┬─────┘
+                                            ▼
+                                     RefinementEngine ──→ Improved Skill
+                                            │
+                                            └──→ (loop back to eval)
+```
+
+## Development
+
+```bash
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace -- -D warnings
+```
+
+## Ecosystem
+
+| Project | What |
+|---------|------|
+| [thulp](https://github.com/dirmacs/thulp) | Execution context engineering — tool discovery, validation, workflows |
+| [ares](https://github.com/dirmacs/ares) | Agentic retrieval-enhanced server |
+| [pawan](https://github.com/dirmacs/pawan) | CLI coding agent |
+| [eruka](https://eruka.dirmacs.com) | Context intelligence engine |
 
 ## Inspiration
 
-This project is inspired by:
-- [HuggingFace upskill](https://github.com/huggingface/upskill) - The original Python implementation
-- [We Got Claude to Build CUDA Kernels and teach open models!](https://huggingface.co/blog/open-source-llms-as-agents-cuda-kernel) - HuggingFace blog post demonstrating the approach
-- [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills) - The SKILL.md format
+- [HuggingFace upskill](https://github.com/huggingface/upskill) — the original Python implementation
+- [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills) — the SKILL.md format
+- [We Got Claude to Build CUDA Kernels](https://huggingface.co/blog/open-source-llms-as-agents-cuda-kernel) — the approach demonstrated
 
 ## License
 
 MIT OR Apache-2.0
-
-## Related Projects
-
-- [thulp](https://github.com/dirmacs/thulp) - Execution Context Engineering Platform for AI Agents
-- [ares](https://github.com/dirmacs/ares) - Production-grade agentic chatbot server
-- [lancor](https://github.com/dirmacs/lancor) - Rust client for llama.cpp's OpenAI-compatible API
-- [forge](https://github.com/dirmacs/forge) - AI pair programmer for 300+ models
-- [daedra](https://github.com/dirmacs/daedra) - DuckDuckGo-powered web search MCP server
