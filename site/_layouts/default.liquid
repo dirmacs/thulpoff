@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }}</title>
+    <link rel="icon" type="image/svg+xml" href="img/thulpoff-logo.svg">
+    <style>
+        :root { --bg: #0d1117; --fg: #c9d1d9; --accent: #a78bfa; --card: #161b22; --border: #30363d; --dim: #8b949e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+        .hero { text-align: center; padding: 4rem 1rem 2rem; }
+        .hero img { width: 96px; margin-bottom: 1rem; }
+        .hero h1 { font-size: 2.5rem; color: #fff; margin-bottom: 0.5rem; }
+        .hero p { color: var(--dim); font-size: 1.1rem; max-width: 640px; margin: 0 auto 1.5rem; }
+        .install { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; max-width: 420px; margin: 0 auto 3rem; font-family: monospace; font-size: 0.95rem; color: var(--accent); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+        .card h3 { color: #fff; margin-bottom: 0.5rem; }
+        .card p { color: var(--dim); font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+        th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--accent); }
+        .section { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
+        .section h2 { color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        code { background: var(--card); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.85rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        footer { text-align: center; color: var(--dim); padding: 2rem; font-size: 0.85rem; border-top: 1px solid var(--border); max-width: 960px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+{{ page.content }}
+<footer>
+    Built by <a href="https://dirmacs.com">DIRMACS</a> &mdash; MIT / Apache-2.0
+</footer>
+</body>
+</html>
