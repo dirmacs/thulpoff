@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/static/img/thulpoff-logo.svg" width="128" alt="thulpoff">
+</p>
+
 <h1 align="center">Thulpoff</h1>
 
 <p align="center">
@@ -108,20 +112,9 @@ thulpoff/
 
 ### The Distillation Loop
 
-```
-TeacherSession ──→ GenerationEngine ──→ GeneratedSkill
-                                            │
-                                            ▼
-                                     EvaluationEngine ──→ EvaluationResult
-                                            │
-                                      ┌─────┴─────┐
-                                      │ score < 1  │
-                                      └─────┬─────┘
-                                            ▼
-                                     RefinementEngine ──→ Improved Skill
-                                            │
-                                            └──→ (loop back to eval)
-```
+<p align="center">
+  <img src="docs/static/img/distillation-loop.svg" alt="Distillation Loop" width="720">
+</p>
 
 ## Development
 

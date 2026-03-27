@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" fill="none">
+  <style>
+    text { font-family: Inter, system-ui, sans-serif; }
+    .box { rx: 8; ry: 8; stroke-width: 2; }
+    .label { font-size: 13px; font-weight: 600; fill: #e2e8f0; }
+    .sublabel { font-size: 10px; fill: #94a3b8; }
+    .arrow { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    .loop-arrow { stroke: #7c3aed; stroke-width: 2; fill: none; stroke-dasharray: 6 3; marker-end: url(#arrowhead-purple); }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="280" rx="12" fill="#0f172a"/>
+
+  <!-- TeacherSession box -->
+  <rect x="20" y="100" width="140" height="60" class="box" fill="#1e293b" stroke="#475569"/>
+  <text x="90" y="127" text-anchor="middle" class="label">TeacherSession</text>
+  <text x="90" y="145" text-anchor="middle" class="sublabel">task + tool calls</text>
+
+  <!-- Arrow: Teacher → Generation -->
+  <path d="M160 130 L195 130" class="arrow"/>
+
+  <!-- GenerationEngine box -->
+  <rect x="200" y="100" width="140" height="60" class="box" fill="#1e1b4b" stroke="#7c3aed"/>
+  <text x="270" y="127" text-anchor="middle" class="label">GenerationEngine</text>
+  <text x="270" y="145" text-anchor="middle" class="sublabel">extract SKILL.md</text>
+
+  <!-- Arrow: Generation → Skill -->
+  <path d="M340 130 L375 130" class="arrow"/>
+
+  <!-- GeneratedSkill box -->
+  <rect x="380" y="100" width="120" height="60" class="box" fill="#1e293b" stroke="#22d3ee"/>
+  <text x="440" y="127" text-anchor="middle" class="label">GeneratedSkill</text>
+  <text x="440" y="145" text-anchor="middle" class="sublabel">SKILL.md + tests</text>
+
+  <!-- Arrow: Skill → Eval -->
+  <path d="M500 130 L535 130" class="arrow"/>
+
+  <!-- EvaluationEngine box -->
+  <rect x="540" y="100" width="155" height="60" class="box" fill="#1e1b4b" stroke="#7c3aed"/>
+  <text x="617" y="127" text-anchor="middle" class="label">EvaluationEngine</text>
+  <text x="617" y="145" text-anchor="middle" class="sublabel">student model scores</text>
+
+  <!-- Arrow: Eval → Result -->
+  <path d="M617 160 L617 195" class="arrow"/>
+
+  <!-- EvaluationResult box -->
+  <rect x="540" y="200" width="155" height="50" class="box" fill="#1e293b" stroke="#f97316"/>
+  <text x="617" y="223" text-anchor="middle" class="label">score &lt; 100%?</text>
+  <text x="617" y="240" text-anchor="middle" class="sublabel">check pass criteria</text>
+
+  <!-- Arrow: Result → Refinement (loop back) -->
+  <path d="M540 225 L440 225 L440 195" class="loop-arrow"/>
+
+  <!-- RefinementEngine label on the loop -->
+  <rect x="420" y="195" width="130" height="40" class="box" fill="#1e1b4b" stroke="#7c3aed"/>
+  <text x="485" y="213" text-anchor="middle" class="label">RefinementEngine</text>
+  <text x="485" y="228" text-anchor="middle" class="sublabel">improve skill</text>
+
+  <!-- Loop arrow back to skill -->
+  <path d="M440 195 L440 165" class="loop-arrow"/>
+
+  <!-- "loop" label -->
+  <text x="470" y="180" class="sublabel" fill="#7c3aed" font-style="italic">refine loop</text>
+</svg>
