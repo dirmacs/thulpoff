@@ -1,0 +1,135 @@
+model-index:
+- name: OLMo 7B
+  results:
+  - task:
+      type: text-generation
+    dataset:
+      name: ARC-Challenge
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 48.5
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: ARC-Easy
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 65.4
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: BoolQ
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 73.4
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: COPA
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 90.0
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: HellaSwag
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 76.4
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: OpenBookQA
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 50.2
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: PIQA
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 78.4
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: SciQ
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 93.8
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: Winogrande
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 67.9
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: MMLU
+      type: text-classification
+    metrics:
+    - name: accuracy
+      type: accuracy
+      value: 28.3
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+    dataset:
+      name: TruthfulQA
+      type: text-classification
+    metrics:
+    - name: MC2
+      type: mc2
+      value: 36.0
+    source:
+      name: OLMo 7B Model Card
+      url: https://huggingface.co/allenai/OLMo-7B

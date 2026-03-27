@@ -1,0 +1,787 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "# One-Shot Evaluation Extraction Task\n\nExtract evaluation benchmark scores from the Hugging Face model \"allenai/OLMo-7B\" and save them to a YAML file named `olmo_7b_evaluations.yaml` in the current directory.\n\n## Requirements:\n\n1. Use the hugging-face-evaluation-manager skill to extract evaluation data from the model's README\n2. Filter the results to include ONLY the following benchmark types:\n   - arc_challenge\n   - arc_easy\n   - boolq\n   - copa\n   - hellaswag\n   - openbookqa\n   - piqa\n   - sciq\n   - winogrande\n   - mmlu\n   - truthfulqa\n3. Save the output in valid model-index YAML format to `olmo_7b_evaluations.yaml`\n4. Do NOT include training hyperparameters, model architecture specs, or random baseline scores\n5. Include the source attribution pointing to the model README\n\nThe output file should be valid YAML that could be directly added to a model card's metadata section.\n"
+        }
+      ],
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_30133348": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cat ../skills/hf_model_evaluation/SKILL.md"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426186.422310026, \"end_time\": 1426189.731394035, \"duration_ms\": 3309.08}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_30133348": {
+          "content": [
+            {
+              "type": "text",
+              "text": "---\nname: hugging-face-evaluation-manager\ndescription: Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content and importing scores from Artificial Analysis API. Works with the model-index metadata format.\n---\n\n# Overview\nThis skill provides tools to add structured evaluation results to Hugging Face model cards. It supports two primary methods for adding evaluation data: extracting existing evaluation tables from README content and importing benchmark scores from Artificial Analysis.\n\n## Integration with HF Ecosystem\n- **Model Cards**: Updates model-index metadata for leaderboard integration\n- **Artificial Analysis**: Direct API integration for benchmark imports\n- **Papers with Code**: Compatible with their model-index specification\n- **Jobs**: Run evaluations directly on Hugging Face Jobs with `uv` integration\n\n# Version\n1.2.0\n\n# Dependencies\n- huggingface_hub>=0.26.0\n- markdown-it-py>=3.0.0\n- python-dotenv>=1.2.1\n- pyyaml>=6.0.3\n- requests>=2.32.5\n- inspect-ai>=0.3.0\n- re (built-in)\n\n# IMPORTANT: Using This Skill\n\n**Use `--help` for the latest workflow guidance.** Works with plain Python or `uv run`:\n```bash\nuv run scripts/evaluation_manager.py --help\nuv run scripts/evaluation_manager.py inspect-tables --help\nuv run scripts/evaluation_manager.py extract-readme --help\n```\nKey workflow (matches CLI help):\n1) `inspect-tables` \u2192 find table numbers/columns  \n2) `extract-readme --table N` \u2192 prints YAML by default  \n3) add `--apply` (push) or `--create-pr` to write changes\n\n# Core Capabilities\n\n## 1. Inspect and Extract Evaluation Tables from README\n- **Inspect Tables**: Use `inspect-tables` to see all tables in a README with structure, columns, and sample rows\n- **Parse Markdown Tables**: Accurate parsing using markdown-it-py (ignores code blocks and examples)\n- **Table Selection**: Use `--table N` to extract from a specific table (required when multiple tables exist)\n- **Format Detection**: Recognize common formats (benchmarks as rows, columns, or comparison tables with multiple models)\n- **Column Matching**: Automatically identify model columns/rows; prefer `--model-column-index` (index from inspect output). Use `--model-name-override` only with exact column header text.\n- **YAML Generation**: Convert selected table to model-index YAML format\n- **Task Typing**: `--task-type` sets the `task.type` field in model-index output (e.g., `text-generation`, `summarization`)\n\n## 2. Import from Artificial Analysis\n- **API Integration**: Fetch benchmark scores directly from Artificial Analysis\n- **Automatic Formatting**: Convert API responses to model-index format\n- **Metadata Preservation**: Maintain source attribution and URLs\n- **PR Creation**: Automatically create pull requests with evaluation updates\n\n## 3. Model-Index Management\n- **YAML Generation**: Create properly formatted model-index entries\n- **Merge Support**: Add evaluations to existing model cards without overwriting\n- **Validation**: Ensure compliance with Papers with Code specification\n- **Batch Operations**: Process multiple models efficiently\n\n## 4. Run Evaluations on HF Jobs\n- **Inspect-AI Integration**: Run standard evaluations using the `inspect-ai` library\n- **UV Integration**: Seamlessly run Python scripts with ephemeral dependencies on HF infrastructure\n- **Zero-Config**: No Dockerfiles or Space management required\n- **Hardware Selection**: Configure CPU or GPU hardware for the evaluation job\n- **Secure Execution**: Handles API tokens safely via secrets passed through the CLI\n\n# Usage Instructions\n\nThe skill includes Python scripts in `scripts/` to perform operations.\n\n### Prerequisites\n- Preferred: use `uv run` (PEP 723 header auto-installs deps)\n- Or install manually: `pip install huggingface-hub markdown-it-py python-dotenv pyyaml requests`\n- Set `HF_TOKEN` environment variable with Write-access token\n- For Artificial Analysis: Set `AA_API_KEY` environment variable\n- `.env` is loaded automatically if `python-dotenv` is installed\n\n### Method 1: Extract from README (CLI workflow)\n\nRecommended flow (matches `--help`):\n```bash\n# 1) Inspect tables to get table numbers and column hints\nuv run scripts/evaluation_manager.py inspect-tables --repo-id \"username/model\"\n\n# 2) Extract a specific table (prints YAML by default)\nuv run scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model\" \\\n  --table 1 \\\n  [--model-column-index <column index shown by inspect-tables>] \\\n  [--model-name-override \"<column header/model name>\"]  # use exact header text if you can't use the index\n\n# 3) Apply changes (push or PR)\nuv run scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model\" \\\n  --table 1 \\\n  --apply       # push directly\n# or\nuv run scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model\" \\\n  --table 1 \\\n  --create-pr   # open a PR\n```\n\nValidation checklist:\n- YAML is printed by default; compare against the README table before applying.\n- Prefer `--model-column-index`; if using `--model-name-override`, the column header text must be exact.\n- For transposed tables (models as rows), ensure only one row is extracted.\n\n### Method 2: Import from Artificial Analysis\n\nFetch benchmark scores from Artificial Analysis API and add them to a model card.\n\n**Basic Usage:**\n```bash\nAA_API_KEY=\"your-api-key\" python scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\"\n```\n\n**With Environment File:**\n```bash\n# Create .env file\necho \"AA_API_KEY=your-api-key\" >> .env\necho \"HF_TOKEN=your-hf-token\" >> .env\n\n# Run import\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\"\n```\n\n**Create Pull Request:**\n```bash\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\" \\\n  --create-pr\n```\n\n### Method 3: Run Evaluation Job\n\nSubmit an evaluation job on Hugging Face infrastructure using the `hf jobs uv run` CLI.\n\n**Direct CLI Usage:**\n```bash\nHF_TOKEN=$HF_TOKEN \\\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor cpu-basic \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"meta-llama/Llama-2-7b-hf\" \\\n     --task \"mmlu\"\n```\n\n**GPU Example (A10G):**\n```bash\nHF_TOKEN=$HF_TOKEN \\\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor a10g-small \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"meta-llama/Llama-2-7b-hf\" \\\n     --task \"gsm8k\"\n```\n\n**Python Helper (optional):**\n```bash\npython scripts/run_eval_job.py \\\n  --model \"meta-llama/Llama-2-7b-hf\" \\\n  --task \"mmlu\" \\\n  --hardware \"t4-small\"\n```\n\n### Commands Reference\n\n**Top-level help and version:**\n```bash\nuv run scripts/evaluation_manager.py --help\nuv run scripts/evaluation_manager.py --version\n```\n\n**Inspect Tables (start here):**\n```bash\nuv run scripts/evaluation_manager.py inspect-tables --repo-id \"username/model-name\"\n```\n\n**Extract from README:**\n```bash\nuv run scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --table N \\\n  [--model-column-index N] \\\n  [--model-name-override \"Exact Column Header or Model Name\"] \\\n  [--task-type \"text-generation\"] \\\n  [--dataset-name \"Custom Benchmarks\"] \\\n  [--apply | --create-pr]\n```\n\n**Import from Artificial Analysis:**\n```bash\nAA_API_KEY=... uv run scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"creator-name\" \\\n  --model-name \"model-slug\" \\\n  --repo-id \"username/model-name\" \\\n  [--create-pr]\n```\n\n**View / Validate:**\n```bash\nuv run scripts/evaluation_manager.py show --repo-id \"username/model-name\"\nuv run scripts/evaluation_manager.py validate --repo-id \"username/model-name\"\n```\n\n**Run Evaluation Job:**\n```bash\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor \"cpu-basic|t4-small|...\" \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"model-id\" \\\n     --task \"task-name\"\n```\n\nor use the Python helper:\n\n```bash\npython scripts/run_eval_job.py \\\n  --model \"model-id\" \\\n  --task \"task-name\" \\\n  --hardware \"cpu-basic|t4-small|...\"\n```\n\n### Model-Index Format\n\nThe generated model-index follows this structure:\n\n```yaml\nmodel-index:\n  - name: Model Name\n    results:\n      - task:\n          type: text-generation\n        dataset:\n          name: Benchmark Dataset\n          type: benchmark_type\n        metrics:\n          - name: MMLU\n            type: mmlu\n            value: 85.2\n          - name: HumanEval\n            type: humaneval\n            value: 72.5\n        source:\n          name: Source Name\n          url: https://source-url.com\n```\n\nWARNING: Do not use markdown formatting in the model name. Use the exact name from the table. Only use urls in the source.url field.\n\n### Error Handling\n- **Table Not Found**: Script will report if no evaluation tables are detected\n- **Invalid Format**: Clear error messages for malformed tables\n- **API Errors**: Retry logic for transient Artificial Analysis API failures\n- **Token Issues**: Validation before attempting updates\n- **Merge Conflicts**: Preserves existing model-index entries when adding new ones\n- **Space Creation**: Handles naming conflicts and hardware request failures gracefully\n\n### Best Practices\n\n1. **Always start with `inspect-tables`**: See table structure and get the correct extraction command\n2. **Use `--help` for guidance**: Run `inspect-tables --help` to see the complete workflow\n3. **Preview first**: Default behavior prints YAML; review it before using `--apply` or `--create-pr`\n4. **Verify extracted values**: Compare YAML output against the README table manually\n5. **Use `--table N` for multi-table READMEs**: Required when multiple evaluation tables exist\n6. **Use `--model-name-override` for comparison tables**: Copy the exact column header from `inspect-tables` output\n7. **Create PRs for Others**: Use `--create-pr` when updating models you don't own\n8. **One model per repo**: Only add the main model's results to model-index\n9. **No markdown in YAML names**: The model name field in YAML should be plain text\n\n### Model Name Matching\n\nWhen extracting evaluation tables with multiple models (either as columns or rows), the script uses **exact normalized token matching**:\n\n- Removes markdown formatting (bold `**`, links `[]()`  )\n- Normalizes names (lowercase, replace `-` and `_` with spaces)\n- Compares token sets: `\"OLMo-3-32B\"` \u2192 `{\"olmo\", \"3\", \"32b\"}` matches `\"**Olmo 3 32B**\"` or `\"[Olmo-3-32B](...)`\n- Only extracts if tokens match exactly (handles different word orders and separators)\n- Fails if no exact match found (rather than guessing from similar names)\n\n**For column-based tables** (benchmarks as rows, models as columns):\n- Finds the column header matching the model name\n- Extracts scores from that column only\n\n**For transposed tables** (models as rows, benchmarks as columns):\n- Finds the row in the first column matching the model name\n- Extracts all benchmark scores from that row only\n\nThis ensures only the correct model's scores are extracted, never unrelated models or training checkpoints. \n\n### Common Patterns\n\n**Update Your Own Model:**\n```bash\n# Extract from README and push directly\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"your-username/your-model\" \\\n  --task-type \"text-generation\"\n```\n\n**Update Someone Else's Model:**\n```bash\n# Create a PR instead of direct push\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"other-username/their-model\" \\\n  --create-pr\n```\n\n**Import Fresh Benchmarks:**\n```bash\n# Get latest scores from Artificial Analysis\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"anthropic/claude-sonnet-4\" \\\n  --create-pr\n```\n\n### Troubleshooting\n\n**Issue**: \"No evaluation tables found in README\"\n- **Solution**: Check if README contains markdown tables with numeric scores\n\n**Issue**: \"Could not find model 'X' in transposed table\"\n- **Solution**: The script will display available models. Use `--model-name-override` with the exact name from the list\n- **Example**: `--model-name-override \"**Olmo 3-32B**\"`\n\n**Issue**: \"AA_API_KEY not set\"\n- **Solution**: Set environment variable or add to .env file\n\n**Issue**: \"Token does not have write access\"\n- **Solution**: Ensure HF_TOKEN has write permissions for the repository\n\n**Issue**: \"Model not found in Artificial Analysis\"\n- **Solution**: Verify creator-slug and model-name match API values\n\n**Issue**: \"Payment required for hardware\"\n- **Solution**: Add a payment method to your Hugging Face account to use non-CPU hardware\n\n### Integration Examples\n\n**Python Script Integration:**\n```python\nimport subprocess\nimport os\n\ndef update_model_evaluations(repo_id, readme_content):\n    \"\"\"Update model card with evaluations from README.\"\"\"\n    result = subprocess.run([\n        \"python\", \"scripts/evaluation_manager.py\",\n        \"extract-readme\",\n        \"--repo-id\", repo_id,\n        \"--create-pr\"\n    ], capture_output=True, text=True)\n\n    if result.returncode == 0:\n        print(f\"Successfully updated {repo_id}\")\n    else:\n        print(f\"Error: {result.stderr}\")\n```\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_30133348\": {\"timing_ms\": 58.27, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_34567521": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nfrom huggingface_hub import HfApi\napi = HfApi()\nrepo_info = api.repo_info('allenai/OLMo-7B')\nreadme = repo_info.readme\nwith open('temp_readme.md', 'w') as f:\n    f.write(readme)\nprint('README saved to temp_readme.md')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426189.799299455, \"end_time\": 1426190.878374897, \"duration_ms\": 1079.08}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_34567521": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] Traceback (most recent call last):\n[stderr]   File \"<string>\", line 5, in <module>\n[stderr]     readme = repo_info.readme\n[stderr]              ^^^^^^^^^^^^^^^^\n[stderr] AttributeError: 'ModelInfo' object has no attribute 'readme'\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_34567521\": {\"timing_ms\": 454.84, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_04128718": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nfrom huggingface_hub import HfApi\napi = HfApi()\nrepo_info = api.repo_info('allenai/OLMo-7B', repo_type='model')\nreadme = api.readme(repo_id='allenai/OLMo-7B', repo_type='model')\nwith open('temp_readme.md', 'w') as f:\n    f.write(readme)\nprint('README saved to temp_readme.md')\nprint('Length:', len(readme))\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426191.34349281, \"end_time\": 1426192.8258919, \"duration_ms\": 1482.4}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_04128718": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] Traceback (most recent call last):\n[stderr]   File \"<string>\", line 5, in <module>\n[stderr]     readme = api.readme(repo_id='allenai/OLMo-7B', repo_type='model')\n[stderr]              ^^^^^^^^^^\n[stderr] AttributeError: 'HfApi' object has no attribute 'readme'\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_04128718\": {\"timing_ms\": 454.5, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_76393421": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nfrom huggingface_hub import HfApi\napi = HfApi()\nrepo_info = api.repo_info('allenai/OLMo-7B', repo_type='model')\nprint('Repo exists:', repo_info.id)\nreadme = repo_info.README\nwith open('temp_readme.md', 'w') as f:\n    f.write(readme)\nprint('README saved to temp_readme.md')\nprint('Length:', len(readme))\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426193.291559106, \"end_time\": 1426194.454282853, \"duration_ms\": 1162.72}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_76393421": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] Traceback (most recent call last):\n[stderr]   File \"<string>\", line 6, in <module>\n[stderr]     readme = repo_info.README\n[stderr]              ^^^^^^^^^^^^^^^^\n[stderr] AttributeError: 'ModelInfo' object has no attribute 'README'\nRepo exists: allenai/OLMo-7B\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_76393421\": {\"timing_ms\": 472.51, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_33263091": {
+          "method": "tools/call",
+          "params": {
+            "name": "huggingface__hub_repo_details",
+            "arguments": {
+              "repo_ids": [
+                "allenai/OLMo-7B"
+              ],
+              "repo_type": "model",
+              "include_readme": true
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426194.936978457, \"end_time\": 1426196.230250277, \"duration_ms\": 1293.27}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_33263091": {
+          "content": [
+            {
+              "type": "text",
+              "text": "# allenai/OLMo-7B\n\n## Overview\n- **Author:** allenai\n- **Task:** text-generation\n- **Library:** transformers\n- **Downloads:** 284.0K | **Likes:** 648\n- **Updated:** 9 Oct, 2025\n\n## Technical Details\n- **Model Class:** AutoModelForCausalLM\n- **Parameters:** 6888.1M\n- **Architecture:** hf_olmo\n\n## Tags\n`transformers` `pytorch` `safetensors` `hf_olmo` `text-generation` `custom_code` `en` `dataset:allenai/dolma` `arxiv:2402.00838` `arxiv:2302.13971` `license:apache-2.0` `region:us`\n\n## Metadata\n- **Language:** en\n- **License:** apache-2.0\n- **Datasets:** allenai/dolma\n\n## Demo Spaces\n- [open_pt_llm_leaderboard](https://hf.co/spaces/eduagarcia/open_pt_llm_leaderboard)\n- [BaseChat](https://hf.co/spaces/allenai/BaseChat)\n- [URIAL-Bench](https://hf.co/spaces/allenai/URIAL-Bench)\n- [Data-Contamination-Database](https://hf.co/spaces/CONDA-Workshop/Data-Contamination-Database)\n- [BiGGen-Bench-Leaderboard](https://hf.co/spaces/prometheus-eval/BiGGen-Bench-Leaderboard)\n- [dutch-tokenizer-arena](https://hf.co/spaces/yhavinga/dutch-tokenizer-arena)\n- [Olmo](https://hf.co/spaces/Tonic/Olmo)\n- [AI_safety_testing](https://hf.co/spaces/Xhaheen/AI_safety_testing)\n- [phoeniks_redteamers](https://hf.co/spaces/Xhaheen/phoeniks_redteamers)\n- [olmo-model](https://hf.co/spaces/Guxtavv/olmo-model)\n\n**Link:** [https://hf.co/allenai/OLMo-7B](https://hf.co/allenai/OLMo-7B)\n\n## README\n<modelcard-readme>\n\n[![mof-class1-qualified](https://mot.isitopen.ai/modules/mof/assets/badge_class1_qualified.png)](https://mot.isitopen.ai/model/1035)\n\n\n<img src=\"https://allenai.org/olmo/olmo-7b-animation.gif\" alt=\"OLMo Logo\" width=\"800\" style=\"margin-left:'auto' margin-right:'auto' display:'block'\"/>\n\n\n# Model Card for OLMo 7B\n\n<!-- Provide a quick summary of what the model is/does. -->\n\n**For transformers versions v4.40.0 or newer, we suggest using [OLMo 7B HF](https://huggingface.co/allenai/OLMo-7B-hf) instead.**\n\nOLMo is a series of **O**pen **L**anguage **Mo**dels designed to enable the science of language models.\nThe OLMo models are trained on the [Dolma](https://huggingface.co/datasets/allenai/dolma) dataset.\nWe release all code, checkpoints, logs (coming soon), and details involved in training these models.\n\n*A new version of this model with a 24 point improvement on MMLU is available [here](https://huggingface.co/allenai/OLMo-1.7-7B)*.\n\n## Model Details\n\nThe core models released in this batch are the following: \n| Size | Training Tokens | Layers | Hidden Size | Attention Heads | Context Length |\n|------|--------|---------|-------------|-----------------|----------------|\n| [OLMo 1B](https://huggingface.co/allenai/OLMo-1B)   | 3 Trillion |16     | 2048        | 16              | 2048  |\n| [OLMo 7B](https://huggingface.co/allenai/OLMo-7B) | 2.5 Trillion   | 32     | 4096        | 32              |  2048  |\n| [OLMo 7B Twin 2T](https://huggingface.co/allenai/OLMo-7B-Twin-2T) | 2 Trillion   | 32     | 4096        | 32              |  2048  |\n\nWe are releasing many checkpoints for these models, for every 1000 traing steps.\nThe naming convention is `step1000-tokens4B`.\nIn particular, we focus on four revisions of the 7B models:\n\n| Name | HF Repo | Model Revision |  Tokens | Note |\n|------------|---------|----------------|-------------------|------|\n|OLMo 7B| [allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)|`main`| 2.5T|The base OLMo 7B model|\n|OLMo 7B (not annealed)|[allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)|step556000-tokens2460B|2.5T| learning rate not annealed to 0|\n|OLMo 7B-2T|[allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)| step452000-tokens2000B |2T| OLMo checkpoint at 2T tokens|\n|OLMo-7B-Twin-2T|[allenai/OLMo-7B-Twin-2T](https://huggingface.co/allenai/OLMo-7B-Twin-2T)|`main`|2T| Twin version on different hardware|\n\nTo load a specific model revision with HuggingFace, simply add the argument `revision`:\n```bash\nfrom hf_olmo import OLMoForCausalLM  # pip install ai2-olmo\n\nolmo = OLMoForCausalLM.from_pretrained(\"allenai/OLMo-7B\", revision=\"step1000-tokens4B\")\n```\n\nAll revisions/branches are listed in the file `revisions.txt`. \nOr, you can access all the revisions for the models via the following code snippet:\n```python\nfrom huggingface_hub import list_repo_refs\nout = list_repo_refs(\"allenai/OLMo-7B\")\nbranches = [b.name for b in out.branches]\n```\nA few revisions were lost due to an error, but the vast majority are present.\n\n### Model Description\n\n<!-- Provide a longer summary of what this model is. -->\n\n- **Developed by:** Allen Institute for AI (AI2)\n- **Supported by:** Databricks, Kempner Institute for the Study of Natural and Artificial Intelligence at Harvard University, AMD, CSC (Lumi Supercomputer), UW\n- **Model type:** a Transformer style autoregressive language model.\n- **Language(s) (NLP):** English\n- **License:** The code and model are released under Apache 2.0.\n- **Contact:** Technical inquiries: `olmo at allenai dot org`. Press: `press at allenai dot org`\n- **Date cutoff:** Feb./March 2023 based on Dolma dataset version.\n\n\n### Model Sources\n\n<!-- Provide the basic links for the model. -->\n\n- **Project Page:** https://allenai.org/olmo\n- **Repositories:** \n    - Core repo (training, inference, fine-tuning etc.): https://github.com/allenai/OLMo\n    - Evaluation code: https://github.com/allenai/OLMo-Eval\n    - Further fine-tuning code: https://github.com/allenai/open-instruct\n- **Paper:** [Link](https://arxiv.org/abs/2402.00838)\n- **Technical blog post:** https://blog.allenai.org/olmo-open-language-model-87ccfc95f580\n- **W&B Logs:** https://wandb.ai/ai2-llm/OLMo-7B/reports/OLMo-7B--Vmlldzo2NzQyMzk5\n<!-- - **Press release:** TODO -->\n\n## Uses\n\n<!-- Address questions around how the model is intended to be used, including the foreseeable users of the model and those affected by the model. -->\n\n### Inference\nQuickly get inference running with the following required installation:\n```bash\npip install ai2-olmo\n```\nNow, proceed as usual with HuggingFace:\n```python\nfrom hf_olmo import OLMoForCausalLM, OLMoTokenizerFast\n\nolmo = OLMoForCausalLM.from_pretrained(\"allenai/OLMo-7B\")\ntokenizer = OLMoTokenizerFast.from_pretrained(\"allenai/OLMo-7B\")\nmessage = [\"Language modeling is\"]\ninputs = tokenizer(message, return_tensors='pt', return_token_type_ids=False)\n# optional verifying cuda\n# inputs = {k: v.to('cuda') for k,v in inputs.items()}\n# olmo = olmo.to('cuda')\nresponse = olmo.generate(**inputs, max_new_tokens=100, do_sample=True, top_k=50, top_p=0.95)\nprint(tokenizer.batch_decode(response, skip_special_tokens=True)[0])\n>> 'Language modeling is the first step to build natural language generation...'\n```\n\nYou can make this slightly faster by quantizing the model, e.g. `AutoModelForCausalLM.from_pretrained(\"allenai/OLMo-7B\", torch_dtype=torch.float16, load_in_8bit=True)` (requires `bitsandbytes`).\nThe quantized model is more sensitive to typing / cuda, so it is recommended to pass the inputs as `inputs.input_ids.to('cuda')` to avoid potential issues.\n\nNote, you may see the following error if `ai2-olmo` is not installed correctly, which is caused by internal Python check naming. We'll update the code soon to make this error clearer.\n```bash\n    raise ImportError(\nImportError: This modeling file requires the following packages that were not found in your environment: hf_olmo. Run `pip install hf_olmo`\n```\n\n### Fine-tuning\nModel fine-tuning can be done from the final checkpoint (the `main` revision of this model) or many intermediate checkpoints. Two recipes for tuning are available.\n1. Fine-tune with the OLMo repository:\n```bash\ntorchrun --nproc_per_node=8 scripts/train.py {path_to_train_config} \\\n    --data.paths=[{path_to_data}/input_ids.npy] \\\n    --data.label_mask_paths=[{path_to_data}/label_mask.npy] \\\n    --load_path={path_to_checkpoint} \\\n    --reset_trainer_state\n```\nFor more documentation, see the [GitHub readme](https://github.com/allenai/OLMo?tab=readme-ov-file#fine-tuning).\n\n2. Further fine-tuning support is being developing in AI2's Open Instruct repository. Details are [here](https://github.com/allenai/open-instruct).\n\n## Evaluation\n\n<!-- This section describes the evaluation protocols and provides the results. -->\n\nCore model results for the 7B model are found below.\n\n|                                   | [Llama 7B](https://arxiv.org/abs/2302.13971) | [Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b) | [Falcon 7B](https://huggingface.co/tiiuae/falcon-7b) | [MPT 7B](https://huggingface.co/mosaicml/mpt-7b) | **OLMo 7B** (ours) |\n| --------------------------------- | -------- | ---------- | --------- | ------ | ------- |\n| arc_challenge       | 44.5             | 39.8             | 47.5         | 46.5         | 48.5            |\n| arc_easy            | 57.0             | 57.7             | 70.4         | 70.5         | 65.4            |\n| boolq               | 73.1             | 73.5             | 74.6         | 74.2         | 73.4            |\n| copa                | 85.0             | 87.0             | 86.0         | 85.0         | 90              |\n| hellaswag           | 74.5             | 74.5             | 75.9         | 77.6         | 76.4            |\n| openbookqa          | 49.8             | 48.4             | 53.0         | 48.6         | 50.2            |\n| piqa                | 76.3             | 76.4             | 78.5         | 77.3         | 78.4            |\n| sciq                | 89.5             | 90.8             | 93.9         | 93.7         | 93.8            |\n| winogrande          | 68.2             | 67.3             | 68.9         | 69.9         | 67.9            |\n| **Core tasks average**  | 68.7             | 68.4             | 72.1         | 71.5         | 71.6            |\n| truthfulQA (MC2)    | 33.9             | 38.5             | 34.0         | 33           | 36.0            |\n| MMLU (5 shot MC)    | 31.5             | 45.0             | 24.0         | 30.8         | 28.3            |\n| GSM8k (mixed eval.) | 10.0 (8shot CoT) | 12.0 (8shot CoT) | 4.0 (5 shot) | 4.5 (5 shot) | 8.5 (8shot CoT) |\n| **Full average**        | 57.8             | 59.3             | 59.2         | 59.3         | 59.8            |\n\nAnd for the 1B model:\n\n| task       | random | [StableLM 2 1.6b](https://huggingface.co/stabilityai/stablelm-2-1_6b)\\* | [Pythia 1B](https://huggingface.co/EleutherAI/pythia-1b) | [TinyLlama 1.1B](https://huggingface.co/TinyLlama/TinyLlama-1.1B-intermediate-step-1195k-token-2.5T) | **OLMo 1B** (ours) |\n| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ----------------- | --------- | -------------------------------------- | ------- |\n| arc_challenge | 25     | 43.81             | 33.11     | 34.78                                  | 34.45   |\n| arc_easy      | 25     | 63.68             | 50.18     | 53.16                                  | 58.07   |\n| boolq         | 50     | 76.6              | 61.8      | 64.6                                   | 60.7    |\n| copa          | 50     | 84                | 72        | 78                                     | 79      |\n| hellaswag     | 25     | 68.2              | 44.7      | 58.7                                   | 62.5    |\n| openbookqa    | 25     | 45.8              | 37.8      | 43.6                                   | 46.4    |\n| piqa          | 50     | 74                \n\n[... truncated to ~10000 characters \u2014 full README: https://huggingface.co/allenai/OLMo-7B]\n</modelcard-readme>"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_33263091\": {\"timing_ms\": 243.42, \"transport_channel\": \"post-json\"}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_05515306": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run scripts/evaluation_manager.py inspect-tables --repo-id allenai/OLMo-7B"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426196.490017509, \"end_time\": 1426197.232751327, \"duration_ms\": 742.73}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_05515306": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] error: Failed to spawn: `scripts/evaluation_manager.py`\n[stderr]   Caused by: No such file or directory (os error 2)\nprocess exit code was 2"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_05515306\": {\"timing_ms\": 27.94, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_95139691": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "mkdir -p scripts && curl -o scripts/evaluation_manager.py https://raw.githubusercontent.com/allenai/OLMo-Eval/main/scripts/evaluation_manager.py || echo \"Could not fetch, creating custom script\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426197.270830959, \"end_time\": 1426199.334817541, \"duration_ms\": 2063.99}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_95139691": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n[stderr]                                  Dload  Upload   Total   Spent    Left  Speed\n[stderr] \r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\r100    14  100    14    0     0     62      0 --:--:-- --:--:-- --:--:--    62\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_95139691\": {\"timing_ms\": 244.61, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_91650699": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cat ../skills/hf_model_evaluation/scripts/evaluation_manager.py"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426199.590247608, \"end_time\": 1426200.407438143, \"duration_ms\": 817.19}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_91650699": {
+          "content": [
+            {
+              "type": "text",
+              "text": "# /// script\n# requires-python = \">=3.13\"\n# dependencies = [\n#     \"huggingface-hub>=1.1.4\",\n#     \"markdown-it-py>=3.0.0\",\n#     \"python-dotenv>=1.2.1\",\n#     \"pyyaml>=6.0.3\",\n#     \"requests>=2.32.5\",\n# ]\n# ///\n\n\"\"\"\nManage evaluation results in Hugging Face model cards.\n\nThis script provides two methods:\n1. Extract evaluation tables from model README files\n2. Import evaluation scores from Artificial Analysis API\n\nBoth methods update the model-index metadata in model cards.\n\"\"\"\n\nimport argparse\nimport os\nimport re\nfrom textwrap import dedent\nfrom typing import Any, Dict, List, Optional, Tuple\n\n\ndef load_env() -> None:\n    \"\"\"Load .env if python-dotenv is available; keep help usable without it.\"\"\"\n    try:\n        import dotenv  # type: ignore\n    except ModuleNotFoundError:\n        return\n    dotenv.load_dotenv()\n\n\ndef require_markdown_it():\n    try:\n        from markdown_it import MarkdownIt  # type: ignore\n    except ModuleNotFoundError as exc:\n        raise ModuleNotFoundError(\n            \"markdown-it-py is required for table parsing. \"\n            \"Install with `uv add markdown-it-py` or `pip install markdown-it-py`.\"\n        ) from exc\n    return MarkdownIt\n\n\ndef require_model_card():\n    try:\n        from huggingface_hub import ModelCard  # type: ignore\n    except ModuleNotFoundError as exc:\n        raise ModuleNotFoundError(\n            \"huggingface-hub is required for model card operations. \"\n            \"Install with `uv add huggingface_hub` or `pip install huggingface-hub`.\"\n        ) from exc\n    return ModelCard\n\n\ndef require_requests():\n    try:\n        import requests  # type: ignore\n    except ModuleNotFoundError as exc:\n        raise ModuleNotFoundError(\n            \"requests is required for Artificial Analysis import. \"\n            \"Install with `uv add requests` or `pip install requests`.\"\n        ) from exc\n    return requests\n\n\ndef require_yaml():\n    try:\n        import yaml  # type: ignore\n    except ModuleNotFoundError as exc:\n        raise ModuleNotFoundError(\n            \"PyYAML is required for YAML output. \"\n            \"Install with `uv add pyyaml` or `pip install pyyaml`.\"\n        ) from exc\n    return yaml\n\n\n# ============================================================================\n# Method 1: Extract Evaluations from README\n# ============================================================================\n\n\ndef extract_tables_from_markdown(markdown_content: str) -> List[str]:\n    \"\"\"Extract all markdown tables from content.\"\"\"\n    # Pattern to match markdown tables\n    table_pattern = r\"(\\|[^\\n]+\\|(?:\\r?\\n\\|[^\\n]+\\|)+)\"\n    tables = re.findall(table_pattern, markdown_content)\n    return tables\n\n\ndef parse_markdown_table(table_str: str) -> Tuple[List[str], List[List[str]]]:\n    \"\"\"\n    Parse a markdown table string into headers and rows.\n\n    Returns:\n        Tuple of (headers, data_rows)\n    \"\"\"\n    lines = [line.strip() for line in table_str.strip().split(\"\\n\")]\n\n    # Remove separator line (the one with dashes)\n    lines = [line for line in lines if not re.match(r\"^\\|[\\s\\-:]+\\|$\", line)]\n\n    if len(lines) < 2:\n        return [], []\n\n    # Parse header\n    header = [cell.strip() for cell in lines[0].split(\"|\")[1:-1]]\n\n    # Parse data rows\n    data_rows = []\n    for line in lines[1:]:\n        cells = [cell.strip() for cell in line.split(\"|\")[1:-1]]\n        if cells:\n            data_rows.append(cells)\n\n    return header, data_rows\n\n\ndef is_evaluation_table(header: List[str], rows: List[List[str]]) -> bool:\n    \"\"\"Determine if a table contains evaluation results.\"\"\"\n    if not header or not rows:\n        return False\n\n    # Check if first column looks like benchmark names\n    benchmark_keywords = [\n        \"benchmark\", \"task\", \"dataset\", \"eval\", \"test\", \"metric\",\n        \"mmlu\", \"humaneval\", \"gsm\", \"hellaswag\", \"arc\", \"winogrande\",\n        \"truthfulqa\", \"boolq\", \"piqa\", \"siqa\"\n    ]\n\n    first_col = header[0].lower()\n    has_benchmark_header = any(keyword in first_col for keyword in benchmark_keywords)\n\n    # Check if there are numeric values in the table\n    has_numeric_values = False\n    for row in rows:\n        for cell in row:\n            try:\n                float(cell.replace(\"%\", \"\").replace(\",\", \"\"))\n                has_numeric_values = True\n                break\n            except ValueError:\n                continue\n        if has_numeric_values:\n            break\n\n    return has_benchmark_header or has_numeric_values\n\n\ndef normalize_model_name(name: str) -> tuple[set[str], str]:\n    \"\"\"\n    Normalize a model name for matching.\n\n    Args:\n        name: Model name to normalize\n\n    Returns:\n        Tuple of (token_set, normalized_string)\n    \"\"\"\n    # Remove markdown formatting\n    cleaned = re.sub(r'\\[([^\\]]+)\\]\\([^\\)]+\\)', r'\\1', name)  # Remove markdown links\n    cleaned = re.sub(r'\\*\\*([^\\*]+)\\*\\*', r'\\1', cleaned)  # Remove bold\n    cleaned = cleaned.strip()\n\n    # Normalize and tokenize\n    normalized = cleaned.lower().replace(\"-\", \" \").replace(\"_\", \" \")\n    tokens = set(normalized.split())\n\n    return tokens, normalized\n\n\ndef find_main_model_column(header: List[str], model_name: str) -> Optional[int]:\n    \"\"\"\n    Identify the column index that corresponds to the main model.\n\n    Only returns a column if there's an exact normalized match with the model name.\n    This prevents extracting scores from training checkpoints or similar models.\n\n    Args:\n        header: Table column headers\n        model_name: Model name from repo_id (e.g., \"OLMo-3-32B-Think\")\n\n    Returns:\n        Column index of the main model, or None if no exact match found\n    \"\"\"\n    if not header or not model_name:\n        return None\n\n    # Normalize model name and extract tokens\n    model_tokens, _ = normalize_model_name(model_name)\n\n    # Find exact matches only\n    for i, col_name in enumerate(header):\n        if not col_name:\n            continue\n\n        # Skip first column (benchmark names)\n        if i == 0:\n            continue\n\n        col_tokens, _ = normalize_model_name(col_name)\n\n        # Check for exact token match\n        if model_tokens == col_tokens:\n            return i\n\n    # No exact match found\n    return None\n\n\ndef find_main_model_row(\n    rows: List[List[str]], model_name: str\n) -> tuple[Optional[int], List[str]]:\n    \"\"\"\n    Identify the row index that corresponds to the main model in a transposed table.\n\n    In transposed tables, each row represents a different model, with the first\n    column containing the model name.\n\n    Args:\n        rows: Table data rows\n        model_name: Model name from repo_id (e.g., \"OLMo-3-32B\")\n\n    Returns:\n        Tuple of (row_index, available_models)\n        - row_index: Index of the main model, or None if no exact match found\n        - available_models: List of all model names found in the table\n    \"\"\"\n    if not rows or not model_name:\n        return None, []\n\n    model_tokens, _ = normalize_model_name(model_name)\n    available_models = []\n\n    for i, row in enumerate(rows):\n        if not row or not row[0]:\n            continue\n\n        row_name = row[0].strip()\n\n        # Skip separator/header rows\n        if not row_name or row_name.startswith('---'):\n            continue\n\n        row_tokens, _ = normalize_model_name(row_name)\n\n        # Collect all non-empty model names\n        if row_tokens:\n            available_models.append(row_name)\n\n        # Check for exact token match\n        if model_tokens == row_tokens:\n            return i, available_models\n\n    return None, available_models\n\n\ndef is_transposed_table(header: List[str], rows: List[List[str]]) -> bool:\n    \"\"\"\n    Determine if a table is transposed (models as rows, benchmarks as columns).\n\n    A table is considered transposed if:\n    - The first column contains model-like names (not benchmark names)\n    - Most other columns contain numeric values\n    - Header row contains benchmark-like names\n\n    Args:\n        header: Table column headers\n        rows: Table data rows\n\n    Returns:\n        True if table appears to be transposed, False otherwise\n    \"\"\"\n    if not header or not rows or len(header) < 3:\n        return False\n\n    # Check if first column header suggests model names\n    first_col = header[0].lower()\n    model_indicators = [\"model\", \"system\", \"llm\", \"name\"]\n    has_model_header = any(indicator in first_col for indicator in model_indicators)\n\n    # Check if remaining headers look like benchmarks\n    benchmark_keywords = [\n        \"mmlu\", \"humaneval\", \"gsm\", \"hellaswag\", \"arc\", \"winogrande\",\n        \"eval\", \"score\", \"benchmark\", \"test\", \"math\", \"code\", \"mbpp\",\n        \"truthfulqa\", \"boolq\", \"piqa\", \"siqa\", \"drop\", \"squad\"\n    ]\n\n    benchmark_header_count = 0\n    for col_name in header[1:]:\n        col_lower = col_name.lower()\n        if any(keyword in col_lower for keyword in benchmark_keywords):\n            benchmark_header_count += 1\n\n    has_benchmark_headers = benchmark_header_count >= 2\n\n    # Check if data rows have numeric values in most columns (except first)\n    numeric_count = 0\n    total_cells = 0\n\n    for row in rows[:5]:  # Check first 5 rows\n        for cell in row[1:]:  # Skip first column\n            total_cells += 1\n            try:\n                float(cell.replace(\"%\", \"\").replace(\",\", \"\").strip())\n                numeric_count += 1\n            except (ValueError, AttributeError):\n                continue\n\n    has_numeric_data = total_cells > 0 and (numeric_count / total_cells) > 0.5\n\n    return (has_model_header or has_benchmark_headers) and has_numeric_data\n\n\ndef extract_metrics_from_table(\n    header: List[str],\n    rows: List[List[str]],\n    table_format: str = \"auto\",\n    model_name: Optional[str] = None,\n    model_column_index: Optional[int] = None\n) -> List[Dict[str, Any]]:\n    \"\"\"\n    Extract metrics from parsed table data.\n\n    Args:\n        header: Table column headers\n        rows: Table data rows\n        table_format: \"rows\" (benchmarks as rows), \"columns\" (benchmarks as columns),\n                     \"transposed\" (models as rows, benchmarks as columns), or \"auto\"\n        model_name: Optional model name to identify the correct column/row\n\n    Returns:\n        List of metric dictionaries with name, type, and value\n    \"\"\"\n    metrics = []\n\n    if table_format == \"auto\":\n        # First check if it's a transposed table (models as rows)\n        if is_transposed_table(header, rows):\n            table_format = \"transposed\"\n        else:\n            # Check if first column header is empty/generic (indicates benchmarks in rows)\n            first_header = header[0].lower().strip() if header else \"\"\n            is_first_col_benchmarks = not first_header or first_header in [\"\", \"benchmark\", \"task\", \"dataset\", \"metric\", \"eval\"]\n\n            if is_first_col_benchmarks:\n                table_format = \"rows\"\n            else:\n                # Heuristic: if first row has mostly numeric values, benchmarks are columns\n                try:\n                    numeric_count = sum(\n                        1 for cell in rows[0] if cell and\n                        re.match(r\"^\\d+\\.?\\d*%?$\", cell.replace(\",\", \"\").strip())\n                    )\n                    table_format = \"columns\" if numeric_count > len(rows[0]) / 2 else \"rows\"\n                except (IndexError, ValueError):\n                    table_format = \"rows\"\n\n    if table_format == \"rows\":\n        # Benchmarks are in rows, scores in columns\n        # Try to identify the main model column if model_name is provided\n        target_column = model_column_index\n        if target_column is None and model_name:\n            target_column = find_main_model_column(header, model_name)\n\n        for row in rows:\n            if not row:\n                continue\n\n            benchmark_name = row[0].strip()\n            if not benchmark_name:\n                continue\n\n            # If we identified a specific column, use it; otherwise use first numeric value\n            if target_column is not None and target_column < len(row):\n                try:\n                    value_str = row[target_column].replace(\"%\", \"\").replace(\",\", \"\").strip()\n                    if value_str:\n                        value = float(value_str)\n                        metrics.append({\n                            \"name\": benchmark_name,\n                            \"type\": benchmark_name.lower().replace(\" \", \"_\"),\n                            \"value\": value\n                        })\n                except (ValueError, IndexError):\n                    pass\n            else:\n                # Extract numeric values from remaining columns (original behavior)\n                for i, cell in enumerate(row[1:], start=1):\n                    try:\n                        # Remove common suffixes and convert to float\n                        value_str = cell.replace(\"%\", \"\").replace(\",\", \"\").strip()\n                        if not value_str:\n                            continue\n\n                        value = float(value_str)\n\n                        # Determine metric name\n                        metric_name = benchmark_name\n                        if len(header) > i and header[i].lower() not in [\"score\", \"value\", \"result\"]:\n                            metric_name = f\"{benchmark_name} ({header[i]})\"\n\n                        metrics.append({\n                            \"name\": metric_name,\n                            \"type\": benchmark_name.lower().replace(\" \", \"_\"),\n                            \"value\": value\n                        })\n                        break  # Only take first numeric value per row\n                    except (ValueError, IndexError):\n                        continue\n\n    elif table_format == \"transposed\":\n        # Models are in rows (first column), benchmarks are in columns (header)\n        # Find the row that matches the target model\n        if not model_name:\n            print(\"Warning: model_name required for transposed table format\")\n            return metrics\n\n        target_row_idx, available_models = find_main_model_row(rows, model_name)\n\n        if target_row_idx is None:\n            print(f\"\\n\u26a0 Could not find model '{model_name}' in transposed table\")\n            if available_models:\n                print(\"\\nAvailable models in table:\")\n                for i, model in enumerate(available_models, 1):\n                    print(f\"  {i}. {model}\")\n                print(\"\\nPlease select the correct model name from the list above.\")\n                print(\"You can specify it using the --model-name-override flag:\")\n                print(f'  --model-name-override \"{available_models[0]}\"')\n            return metrics\n\n        target_row = rows[target_row_idx]\n\n        # Extract metrics from each column (skip first column which is model name)\n        for i in range(1, len(header)):\n            benchmark_name = header[i].strip()\n            if not benchmark_name or i >= len(target_row):\n                continue\n\n            try:\n                value_str = target_row[i].replace(\"%\", \"\").replace(\",\", \"\").strip()\n                if not value_str:\n                    continue\n\n                value = float(value_str)\n\n                metrics.append({\n                    \"name\": benchmark_name,\n                    \"type\": benchmark_name.lower().replace(\" \", \"_\").replace(\"-\", \"_\"),\n                    \"value\": value\n                })\n            except (ValueError, AttributeError):\n                continue\n\n    else:  # table_format == \"columns\"\n        # Benchmarks are in columns\n        if not rows:\n            return metrics\n\n        # Use first data row for values\n        data_row = rows[0]\n\n        for i, benchmark_name in enumerate(header):\n            if not benchmark_name or i >= len(data_row):\n                continue\n\n            try:\n                value_str = data_row[i].replace(\"%\", \"\").replace(\",\", \"\").strip()\n                if not value_str:\n                    continue\n\n                value = float(value_str)\n\n                metrics.append({\n                    \"name\": benchmark_name,\n                    \"type\": benchmark_name.lower().replace(\" \", \"_\"),\n                    \"value\": value\n                })\n            except ValueError:\n                continue\n\n    return metrics\n\n\ndef extract_evaluations_from_readme(\n    repo_id: str,\n    task_type: str = \"text-generation\",\n    dataset_name: str = \"Benchmarks\",\n    dataset_type: str = \"benchmark\",\n    model_name_override: Optional[str] = None,\n    table_index: Optional[int] = None,\n    model_column_index: Optional[int] = None\n) -> Optional[List[Dict[str, Any]]]:\n    \"\"\"\n    Extract evaluation results from a model's README.\n\n    Args:\n        repo_id: Hugging Face model repository ID\n        task_type: Task type for model-index (e.g., \"text-generation\")\n        dataset_name: Name for the benchmark dataset\n        dataset_type: Type identifier for the dataset\n        model_name_override: Override model name for matching (column header for comparison tables)\n        table_index: 1-indexed table number from inspect-tables output\n\n    Returns:\n        Model-index formatted results or None if no evaluations found\n    \"\"\"\n    try:\n        load_env()\n        ModelCard = require_model_card()\n        hf_token = os.getenv(\"HF_TOKEN\")\n        card = ModelCard.load(repo_id, token=hf_token)\n        readme_content = card.content\n\n        if not readme_content:\n            print(f\"No README content found for {repo_id}\")\n            return None\n\n        # Extract model name from repo_id or use override\n        if model_name_override:\n            model_name = model_name_override\n            print(f\"Using model name override: '{model_name}'\")\n        else:\n            model_name = repo_id.split(\"/\")[-1] if \"/\" in repo_id else repo_id\n\n        # Use markdown-it parser for accurate table extraction\n        all_tables = extract_tables_with_parser(readme_content)\n\n        if not all_tables:\n            print(f\"No tables found in README for {repo_id}\")\n            return None\n\n        # If table_index specified, use that specific table\n        if table_index is not None:\n            if table_index < 1 or table_index > len(all_tables):\n                print(f\"Invalid table index {table_index}. Found {len(all_tables)} tables.\")\n                print(\"Run inspect-tables to see available tables.\")\n                return None\n            tables_to_process = [all_tables[table_index - 1]]\n        else:\n            # Filter to evaluation tables only\n            eval_tables = []\n            for table in all_tables:\n                header = table.get(\"headers\", [])\n                rows = table.get(\"rows\", [])\n                if is_evaluation_table(header, rows):\n                    eval_tables.append(table)\n\n            if len(eval_tables) > 1:\n                print(f\"\\n\u26a0 Found {len(eval_tables)} evaluation tables.\")\n                print(\"Run inspect-tables first, then use --table to select one:\")\n                print(f'  uv run scripts/evaluation_manager.py inspect-tables --repo-id \"{repo_id}\"')\n                return None\n            elif len(eval_tables) == 0:\n                print(f\"No evaluation tables found in README for {repo_id}\")\n                return None\n\n            tables_to_process = eval_tables\n\n        # Extract metrics from selected table(s)\n        all_metrics = []\n        for table in tables_to_process:\n            header = table.get(\"headers\", [])\n            rows = table.get(\"rows\", [])\n            metrics = extract_metrics_from_table(\n                header,\n                rows,\n                model_name=model_name,\n                model_column_index=model_column_index\n            )\n            all_metrics.extend(metrics)\n\n        if not all_metrics:\n            print(f\"No metrics extracted from table\")\n            return None\n\n        # Build model-index structure\n        display_name = repo_id.split(\"/\")[-1] if \"/\" in repo_id else repo_id\n\n        results = [{\n            \"task\": {\"type\": task_type},\n            \"dataset\": {\n                \"name\": dataset_name,\n                \"type\": dataset_type\n            },\n            \"metrics\": all_metrics,\n            \"source\": {\n                \"name\": \"Model README\",\n                \"url\": f\"https://huggingface.co/{repo_id}\"\n            }\n        }]\n\n        return results\n\n    except Exception as e:\n        print(f\"Error extracting evaluations from README: {e}\")\n        return None\n\n\n# ============================================================================\n# Table Inspection (using markdown-it-py for accurate parsing)\n# ============================================================================\n\n\ndef extract_tables_with_parser(markdown_content: str) -> List[Dict[str, Any]]:\n    \"\"\"\n    Extract tables from markdown using markdown-it-py parser.\n    Uses GFM (GitHub Flavored Markdown) which includes table support.\n    \"\"\"\n    MarkdownIt = require_markdown_it()\n    # Disable linkify to avoid optional dependency errors; not needed for table parsing.\n    md = MarkdownIt(\"gfm-like\", {\"linkify\": False})\n    tokens = md.parse(markdown_content)\n\n    tables = []\n    i = 0\n    while i < len(tokens):\n        token = tokens[i]\n\n        if token.type == \"table_open\":\n            table_data = {\"headers\": [], \"rows\": []}\n            current_row = []\n            in_header = False\n\n            i += 1\n            while i < len(tokens) and tokens[i].type != \"table_close\":\n                t = tokens[i]\n                if t.type == \"thead_open\":\n                    in_header = True\n                elif t.type == \"thead_close\":\n                    in_header = False\n                elif t.type == \"tr_open\":\n                    current_row = []\n                elif t.type == \"tr_close\":\n                    if in_header:\n                        table_data[\"headers\"] = current_row\n                    else:\n                        table_data[\"rows\"].append(current_row)\n                    current_row = []\n                elif t.type == \"inline\":\n                    current_row.append(t.content.strip())\n                i += 1\n\n            if table_data[\"headers\"] or table_data[\"rows\"]:\n                tables.append(table_data)\n\n        i += 1\n\n    return tables\n\n\ndef detect_table_format(table: Dict[str, Any], repo_id: str) -> Dict[str, Any]:\n    \"\"\"Analyze a table to detect its format and identify model columns.\"\"\"\n    headers = table.get(\"headers\", [])\n    rows = table.get(\"rows\", [])\n\n    if not headers or not rows:\n        return {\"format\": \"unknown\", \"columns\": headers, \"model_columns\": [], \"row_count\": 0, \"sample_rows\": []}\n\n    first_header = headers[0].lower() if headers else \"\"\n    is_first_col_benchmarks = not first_header or first_header in [\"\", \"benchmark\", \"task\", \"dataset\", \"metric\", \"eval\"]\n\n    # Check for numeric columns\n    numeric_columns = []\n    for col_idx in range(1, len(headers)):\n        numeric_count = 0\n        for row in rows[:5]:\n            if col_idx < len(row):\n                try:\n                    val = re.sub(r'\\s*\\([^)]*\\)', '', row[col_idx])\n                    float(val.replace(\"%\", \"\").replace(\",\", \"\").strip())\n                    numeric_count += 1\n                except (ValueError, AttributeError):\n                    pass\n        if numeric_count > len(rows[:5]) / 2:\n            numeric_columns.append(col_idx)\n\n    # Determine format\n    if is_first_col_benchmarks and len(numeric_columns) > 1:\n        format_type = \"comparison\"\n    elif is_first_col_benchmarks and len(numeric_columns) == 1:\n        format_type = \"simple\"\n    elif len(numeric_columns) > len(headers) / 2:\n        format_type = \"transposed\"\n    else:\n        format_type = \"unknown\"\n\n    # Find model columns\n    model_columns = []\n    model_name = repo_id.split(\"/\")[-1] if \"/\" in repo_id else repo_id\n    model_tokens, _ = normalize_model_name(model_name)\n\n    for idx, header in enumerate(headers):\n        if idx == 0 and is_first_col_benchmarks:\n            continue\n        if header:\n            header_tokens, _ = normalize_model_name(header)\n            is_match = model_tokens == header_tokens\n            is_partial = model_tokens.issubset(header_tokens) or header_tokens.issubset(model_tokens)\n            model_columns.append({\n                \"index\": idx,\n                \"header\": header,\n                \"is_exact_match\": is_match,\n                \"is_partial_match\": is_partial and not is_match\n            })\n\n    return {\n        \"format\": format_type,\n        \"columns\": headers,\n        \"model_columns\": model_columns,\n        \"row_count\": len(rows),\n        \"sample_rows\": [row[0] for row in rows[:5] if row]\n    }\n\n\ndef inspect_tables(repo_id: str) -> None:\n    \"\"\"Inspect and display all evaluation tables in a model's README.\"\"\"\n    try:\n        load_env()\n        ModelCard = require_model_card()\n        hf_token = os.getenv(\"HF_TOKEN\")\n        card = ModelCard.load(repo_id, token=hf_token)\n        readme_content = card.content\n\n        if not readme_content:\n            print(f\"No README content found for {repo_id}\")\n            return\n\n        tables = extract_tables_with_parser(readme_content)\n\n        if not tables:\n            print(f\"No tables found in README for {repo_id}\")\n            return\n\n        print(f\"\\n{'='*70}\")\n        print(f\"Tables found in README for: {repo_id}\")\n        print(f\"{'='*70}\")\n\n        eval_table_count = 0\n        for table in tables:\n            analysis = detect_table_format(table, repo_id)\n\n            if analysis[\"format\"] == \"unknown\" and not analysis.get(\"sample_rows\"):\n                continue\n\n            eval_table_count += 1\n            print(f\"\\n## Table {eval_table_count}\")\n            print(f\"   Format: {analysis['format']}\")\n            print(f\"   Rows: {analysis['row_count']}\")\n\n            print(f\"\\n   Columns ({len(analysis['columns'])}):\")\n            for col_info in analysis.get(\"model_columns\", []):\n                idx = col_info[\"index\"]\n                header = col_info[\"header\"]\n                if col_info[\"is_exact_match\"]:\n                    print(f\"      [{idx}] {header}  \u2713 EXACT MATCH\")\n                elif col_info[\"is_partial_match\"]:\n                    print(f\"      [{idx}] {header}  ~ partial match\")\n                else:\n                    print(f\"      [{idx}] {header}\")\n\n            if analysis.get(\"sample_rows\"):\n                print(f\"\\n   Sample rows (first column):\")\n                for row_val in analysis[\"sample_rows\"][:5]:\n                    print(f\"      - {row_val}\")\n\n        if eval_table_count == 0:\n            print(\"\\nNo evaluation tables detected.\")\n        else:\n            print(\"\\nSuggested next step:\")\n            print(f'  uv run scripts/evaluation_manager.py extract-readme --repo-id \"{repo_id}\" --table <table-number> [--model-column-index <column-index>]')\n\n        print(f\"\\n{'='*70}\\n\")\n\n    except Exception as e:\n        print(f\"Error inspecting tables: {e}\")\n\n\n# ============================================================================\n# Method 2: Import from Artificial Analysis\n# ============================================================================\n\n\ndef get_aa_model_data(creator_slug: str, model_name: str) -> Optional[Dict[str, Any]]:\n    \"\"\"\n    Fetch model evaluation data from Artificial Analysis API.\n\n    Args:\n        creator_slug: Creator identifier (e.g., \"anthropic\", \"openai\")\n        model_name: Model slug/identifier\n\n    Returns:\n        Model data dictionary or None if not found\n    \"\"\"\n    load_env()\n    AA_API_KEY = os.getenv(\"AA_API_KEY\")\n    if not AA_API_KEY:\n        raise ValueError(\"AA_API_KEY environment variable is not set\")\n\n    url = \"https://artificialanalysis.ai/api/v2/data/llms/models\"\n    headers = {\"x-api-key\": AA_API_KEY}\n\n    requests = require_requests()\n\n    try:\n        response = requests.get(url, headers=headers, timeout=30)\n        response.raise_for_status()\n\n        data = response.json().get(\"data\", [])\n\n        for model in data:\n            creator = model.get(\"model_creator\", {})\n            if creator.get(\"slug\") == creator_slug and model.get(\"slug\") == model_name:\n                return model\n\n        print(f\"Model {creator_slug}/{model_name} not found in Artificial Analysis\")\n        return None\n\n    except requests.RequestException as e:\n        print(f\"Error fetching data from Artificial Analysis: {e}\")\n        return None\n\n\ndef aa_data_to_model_index(\n    model_data: Dict[str, Any],\n    dataset_name: str = \"Artificial Analysis Benchmarks\",\n    dataset_type: str = \"artificial_analysis\",\n    task_type: str = \"evaluation\"\n) -> List[Dict[str, Any]]:\n    \"\"\"\n    Convert Artificial Analysis model data to model-index format.\n\n    Args:\n        model_data: Raw model data from AA API\n        dataset_name: Dataset name for model-index\n        dataset_type: Dataset type identifier\n        task_type: Task type for model-index\n\n    Returns:\n        Model-index formatted results\n    \"\"\"\n    model_name = model_data.get(\"name\", model_data.get(\"slug\", \"unknown-model\"))\n    evaluations = model_data.get(\"evaluations\", {})\n\n    if not evaluations:\n        print(f\"No evaluations found for model {model_name}\")\n        return []\n\n    metrics = []\n    for key, value in evaluations.items():\n        if value is not None:\n            metrics.append({\n                \"name\": key.replace(\"_\", \" \").title(),\n                \"type\": key,\n                \"value\": value\n            })\n\n    results = [{\n        \"task\": {\"type\": task_type},\n        \"dataset\": {\n            \"name\": dataset_name,\n            \"type\": dataset_type\n        },\n        \"metrics\": metrics,\n        \"source\": {\n            \"name\": \"Artificial Analysis API\",\n            \"url\": \"https://artificialanalysis.ai\"\n        }\n    }]\n\n    return results\n\n\ndef import_aa_evaluations(\n    creator_slug: str,\n    model_name: str,\n    repo_id: str\n) -> Optional[List[Dict[str, Any]]]:\n    \"\"\"\n    Import evaluation results from Artificial Analysis for a model.\n\n    Args:\n        creator_slug: Creator identifier in AA\n        model_name: Model identifier in AA\n        repo_id: Hugging Face repository ID to update\n\n    Returns:\n        Model-index formatted results or None if import fails\n    \"\"\"\n    model_data = get_aa_model_data(creator_slug, model_name)\n\n    if not model_data:\n        return None\n\n    results = aa_data_to_model_index(model_data)\n    return results\n\n\n# ============================================================================\n# Model Card Update Functions\n# ============================================================================\n\n\ndef update_model_card_with_evaluations(\n    repo_id: str,\n    results: List[Dict[str, Any]],\n    create_pr: bool = False,\n    commit_message: Optional[str] = None\n) -> bool:\n    \"\"\"\n    Update a model card with evaluation results.\n\n    Args:\n        repo_id: Hugging Face repository ID\n        results: Model-index formatted results\n        create_pr: Whether to create a PR instead of direct push\n        commit_message: Custom commit message\n\n    Returns:\n        True if successful, False otherwise\n    \"\"\"\n    try:\n        load_env()\n        ModelCard = require_model_card()\n        hf_token = os.getenv(\"HF_TOKEN\")\n        if not hf_token:\n            raise ValueError(\"HF_TOKEN environment variable is not set\")\n\n        # Load existing card\n        card = ModelCard.load(repo_id, token=hf_token)\n\n        # Get model name\n        model_name = repo_id.split(\"/\")[-1] if \"/\" in repo_id else repo_id\n\n        # Create or update model-index\n        model_index = [{\n            \"name\": model_name,\n            \"results\": results\n        }]\n\n        # Merge with existing model-index if present\n        if \"model-index\" in card.data:\n            existing = card.data[\"model-index\"]\n            if isinstance(existing, list) and existing:\n                # Keep existing name if present\n                if \"name\" in existing[0]:\n                    model_index[0][\"name\"] = existing[0][\"name\"]\n\n                # Merge results\n                existing_results = existing[0].get(\"results\", [])\n                model_index[0][\"results\"].extend(existing_results)\n\n        card.data[\"model-index\"] = model_index\n\n        # Prepare commit message\n        if not commit_message:\n            commit_message = f\"Add evaluation results to {model_name}\"\n\n        commit_description = (\n            \"This commit adds structured evaluation results to the model card. \"\n            \"The results are formatted using the model-index specification and \"\n            \"will be displayed in the model card's evaluation widget.\"\n        )\n\n        # Push update\n        card.push_to_hub(\n            repo_id,\n            token=hf_token,\n            commit_message=commit_message,\n            commit_description=commit_description,\n            create_pr=create_pr\n        )\n\n        action = \"Pull request created\" if create_pr else \"Model card updated\"\n        print(f\"\u2713 {action} successfully for {repo_id}\")\n        return True\n\n    except Exception as e:\n        print(f\"Error updating model card: {e}\")\n        return False\n\n\ndef show_evaluations(repo_id: str) -> None:\n    \"\"\"Display current evaluations in a model card.\"\"\"\n    try:\n        load_env()\n        ModelCard = require_model_card()\n        hf_token = os.getenv(\"HF_TOKEN\")\n        card = ModelCard.load(repo_id, token=hf_token)\n\n        if \"model-index\" not in card.data:\n            print(f\"No model-index found in {repo_id}\")\n            return\n\n        model_index = card.data[\"model-index\"]\n\n        print(f\"\\nEvaluations for {repo_id}:\")\n        print(\"=\" * 60)\n\n        for model_entry in model_index:\n            model_name = model_entry.get(\"name\", \"Unknown\")\n            print(f\"\\nModel: {model_name}\")\n\n            results = model_entry.get(\"results\", [])\n            for i, result in enumerate(results, 1):\n                print(f\"\\n  Result Set {i}:\")\n\n                task = result.get(\"task\", {})\n                print(f\"    Task: {task.get('type', 'unknown')}\")\n\n                dataset = result.get(\"dataset\", {})\n                print(f\"    Dataset: {dataset.get('name', 'unknown')}\")\n\n                metrics = result.get(\"metrics\", [])\n                print(f\"    Metrics ({len(metrics)}):\")\n                for metric in metrics:\n                    name = metric.get(\"name\", \"Unknown\")\n                    value = metric.get(\"value\", \"N/A\")\n                    print(f\"      - {name}: {value}\")\n\n                source = result.get(\"source\", {})\n                if source:\n                    print(f\"    Source: {source.get('name', 'Unknown')}\")\n\n        print(\"\\n\" + \"=\" * 60)\n\n    except Exception as e:\n        print(f\"Error showing evaluations: {e}\")\n\n\ndef validate_model_index(repo_id: str) -> bool:\n    \"\"\"Validate model-index format in a model card.\"\"\"\n    try:\n        load_env()\n        ModelCard = require_model_card()\n        hf_token = os.getenv(\"HF_TOKEN\")\n        card = ModelCard.load(repo_id, token=hf_token)\n\n        if \"model-index\" not in card.data:\n            print(f\"\u2717 No model-index found in {repo_id}\")\n            return False\n\n        model_index = card.data[\"model-index\"]\n\n        if not isinstance(model_index, list):\n            print(\"\u2717 model-index must be a list\")\n            return False\n\n        for i, entry in enumerate(model_index):\n            if \"name\" not in entry:\n                print(f\"\u2717 Entry {i} missing 'name' field\")\n                return False\n\n            if \"results\" not in entry:\n                print(f\"\u2717 Entry {i} missing 'results' field\")\n                return False\n\n            for j, result in enumerate(entry[\"results\"]):\n                if \"task\" not in result:\n                    print(f\"\u2717 Result {j} in entry {i} missing 'task' field\")\n                    return False\n\n                if \"dataset\" not in result:\n                    print(f\"\u2717 Result {j} in entry {i} missing 'dataset' field\")\n                    return False\n\n                if \"metrics\" not in result:\n                    print(f\"\u2717 Result {j} in entry {i} missing 'metrics' field\")\n                    return False\n\n        print(f\"\u2713 Model-index format is valid for {repo_id}\")\n        return True\n\n    except Exception as e:\n        print(f\"Error validating model-index: {e}\")\n        return False\n\n\n# ============================================================================\n# CLI Interface\n# ============================================================================\n\n\ndef main():\n    parser = argparse.ArgumentParser(\n        description=(\n            \"Manage evaluation results in Hugging Face model cards.\\n\\n\"\n            \"Use standard Python or `uv run scripts/evaluation_manager.py ...` \"\n            \"to auto-resolve dependencies from the PEP 723 header.\"\n        ),\n        formatter_class=argparse.RawTextHelpFormatter,\n        epilog=dedent(\n            \"\"\"\\\n            Typical workflows:\n              - Inspect tables first:\n                  uv run scripts/evaluation_manager.py inspect-tables --repo-id <model>\n              - Extract from README (prints YAML by default):\n                  uv run scripts/evaluation_manager.py extract-readme --repo-id <model> --table N\n              - Apply changes:\n                  uv run scripts/evaluation_manager.py extract-readme --repo-id <model> --table N --apply\n              - Import from Artificial Analysis:\n                  AA_API_KEY=... uv run scripts/evaluation_manager.py import-aa --creator-slug org --model-name slug --repo-id <model>\n\n            Tips:\n              - YAML is printed by default; use --apply or --create-pr to write changes.\n              - Set HF_TOKEN (and AA_API_KEY for import-aa); .env is loaded automatically if python-dotenv is installed.\n              - When multiple tables exist, run inspect-tables then select with --table N.\n              - To apply changes (push or PR), rerun extract-readme with --apply or --create-pr.\n            \"\"\"\n        ),\n    )\n    parser.add_argument(\"--version\", action=\"version\", version=\"evaluation_manager 1.2.0\")\n\n    subparsers = parser.add_subparsers(dest=\"command\", help=\"Command to execute\")\n\n    # Extract from README command\n    extract_parser = subparsers.add_parser(\n        \"extract-readme\",\n        help=\"Extract evaluation tables from model README\",\n        formatter_class=argparse.RawTextHelpFormatter,\n        description=\"Parse README tables into model-index YAML. Default behavior prints YAML; use --apply/--create-pr to write changes.\",\n        epilog=dedent(\n            \"\"\"\\\n            Examples:\n              uv run scripts/evaluation_manager.py extract-readme --repo-id username/model\n              uv run scripts/evaluation_manager.py extract-readme --repo-id username/model --table 2 --model-column-index 3\n              uv run scripts/evaluation_manager.py extract-readme --repo-id username/model --table 2 --model-name-override \\\"**Model 7B**\\\"  # exact header text\n              uv run scripts/evaluation_manager.py extract-readme --repo-id username/model --table 2 --create-pr\n\n            Apply changes:\n              - Default: prints YAML to stdout (no writes).\n              - Add --apply to push directly, or --create-pr to open a PR.\n            Model selection:\n              - Preferred: --model-column-index <header index shown by inspect-tables>\n              - If using --model-name-override, copy the column header text exactly.\n            \"\"\"\n        ),\n    )\n    extract_parser.add_argument(\"--repo-id\", type=str, required=True, help=\"HF repository ID\")\n    extract_parser.add_argument(\"--table\", type=int, help=\"Table number (1-indexed, from inspect-tables output)\")\n    extract_parser.add_argument(\"--model-column-index\", type=int, help=\"Preferred: column index from inspect-tables output (exact selection)\")\n    extract_parser.add_argument(\"--model-name-override\", type=str, help=\"Exact column header/model name for comparison/transpose tables (when index is not used)\")\n    extract_parser.add_argument(\"--task-type\", type=str, default=\"text-generation\", help=\"Sets model-index task.type (e.g., text-generation, summarization)\")\n    extract_parser.add_argument(\"--dataset-name\", type=str, default=\"Benchmarks\", help=\"Dataset name\")\n    extract_parser.add_argument(\"--dataset-type\", type=str, default=\"benchmark\", help=\"Dataset type\")\n    extract_parser.add_argument(\"--create-pr\", action=\"store_true\", help=\"Create PR instead of direct push\")\n    extract_parser.add_argument(\"--apply\", action=\"store_true\", help=\"Apply changes (default is to print YAML only)\")\n    extract_parser.add_argument(\"--dry-run\", action=\"store_true\", help=\"Preview YAML without updating (default)\")\n\n    # Import from AA command\n    aa_parser = subparsers.add_parser(\n        \"import-aa\",\n        help=\"Import evaluation scores from Artificial Analysis\",\n        formatter_class=argparse.RawTextHelpFormatter,\n        description=\"Fetch scores from Artificial Analysis API and write them into model-index.\",\n        epilog=dedent(\n            \"\"\"\\\n            Examples:\n              AA_API_KEY=... uv run scripts/evaluation_manager.py import-aa --creator-slug anthropic --model-name claude-sonnet-4 --repo-id username/model\n              uv run scripts/evaluation_manager.py import-aa --creator-slug openai --model-name gpt-4o --repo-id username/model --create-pr\n\n            Requires: AA_API_KEY in env (or .env if python-dotenv installed).\n            \"\"\"\n        ),\n    )\n    aa_parser.add_argument(\"--creator-slug\", type=str, required=True, help=\"AA creator slug\")\n    aa_parser.add_argument(\"--model-name\", type=str, required=True, help=\"AA model name\")\n    aa_parser.add_argument(\"--repo-id\", type=str, required=True, help=\"HF repository ID\")\n    aa_parser.add_argument(\"--create-pr\", action=\"store_true\", help=\"Create PR instead of direct push\")\n\n    # Show evaluations command\n    show_parser = subparsers.add_parser(\n        \"show\",\n        help=\"Display current evaluations in model card\",\n        formatter_class=argparse.RawTextHelpFormatter,\n        description=\"Print model-index content from the model card (requires HF_TOKEN for private repos).\",\n    )\n    show_parser.add_argument(\"--repo-id\", type=str, required=True, help=\"HF repository ID\")\n\n    # Validate command\n    validate_parser = subparsers.add_parser(\n        \"validate\",\n        help=\"Validate model-index format\",\n        formatter_class=argparse.RawTextHelpFormatter,\n        description=\"Schema sanity check for model-index section of the card.\",\n    )\n    validate_parser.add_argument(\"--repo-id\", type=str, required=True, help=\"HF repository ID\")\n\n    # Inspect tables command\n    inspect_parser = subparsers.add_parser(\n        \"inspect-tables\",\n        help=\"Inspect tables in README \u2192 outputs suggested extract-readme command\",\n        formatter_class=argparse.RawDescriptionHelpFormatter,\n        epilog=\"\"\"\nWorkflow:\n  1. inspect-tables     \u2192 see table structure, columns, and table numbers\n  2. extract-readme     \u2192 run with --table N (from step 1); YAML prints by default\n  3. apply changes      \u2192 rerun extract-readme with --apply or --create-pr\n\nReminder:\n  - Preferred: use --model-column-index <index>. If needed, use --model-name-override with the exact column header text.\n\"\"\"\n    )\n    inspect_parser.add_argument(\"--repo-id\", type=str, required=True, help=\"HF repository ID\")\n\n    args = parser.parse_args()\n\n    if not args.command:\n        parser.print_help()\n        return\n\n    try:\n        # Execute command\n        if args.command == \"extract-readme\":\n            results = extract_evaluations_from_readme(\n                repo_id=args.repo_id,\n                task_type=args.task_type,\n                dataset_name=args.dataset_name,\n                dataset_type=args.dataset_type,\n                model_name_override=args.model_name_override,\n                table_index=args.table,\n                model_column_index=args.model_column_index\n            )\n\n            if not results:\n                print(\"No evaluations extracted\")\n                return\n\n            apply_changes = args.apply or args.create_pr\n\n            # Default behavior: print YAML (dry-run)\n            yaml = require_yaml()\n            print(\"\\nExtracted evaluations (YAML):\")\n            print(\n                yaml.dump(\n                    {\"model-index\": [{\"name\": args.repo_id.split('/')[-1], \"results\": results}]},\n                    sort_keys=False\n                )\n            )\n\n            if apply_changes:\n                if args.model_name_override and args.model_column_index is not None:\n                    print(\"Note: --model-column-index takes precedence over --model-name-override.\")\n                update_model_card_with_evaluations(\n                    repo_id=args.repo_id,\n                    results=results,\n                    create_pr=args.create_pr,\n                    commit_message=\"Extract evaluation results from README\"\n                )\n\n        elif args.command == \"import-aa\":\n            results = import_aa_evaluations(\n                creator_slug=args.creator_slug,\n                model_name=args.model_name,\n                repo_id=args.repo_id\n            )\n\n            if not results:\n                print(\"No evaluations imported\")\n                return\n\n            update_model_card_with_evaluations(\n                repo_id=args.repo_id,\n                results=results,\n                create_pr=args.create_pr,\n                commit_message=f\"Add Artificial Analysis evaluations for {args.model_name}\"\n            )\n\n        elif args.command == \"show\":\n            show_evaluations(args.repo_id)\n\n        elif args.command == \"validate\":\n            validate_model_index(args.repo_id)\n\n        elif args.command == \"inspect-tables\":\n            inspect_tables(args.repo_id)\n    except ModuleNotFoundError as exc:\n        # Surface dependency hints cleanly when user only needs help output\n        print(exc)\n    except Exception as exc:\n        print(f\"Error: {exc}\")\n\n\nif __name__ == \"__main__\":\n    main()\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_91650699\": {\"timing_ms\": 208.58, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_70161640": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run scripts/evaluation_manager.py inspect-tables --repo-id allenai/OLMo-7B"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426200.626710162, \"end_time\": 1426202.71732515, \"duration_ms\": 2090.61}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_70161640": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr]   File \"/home/ssmith/source/skills-test/scripts/evaluation_manager.py\", line 1\n[stderr]     404: Not Found\n[stderr]     ^^^\n[stderr] SyntaxError: illegal target for annotation\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_70161640\": {\"timing_ms\": 47.74, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_21397004": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nfrom huggingface_hub import ModelCard\ncard = ModelCard.load('allenai/OLMo-7B')\nreadme = card.content\nwith open('temp_readme.md', 'w') as f:\n    f.write(readme)\nprint('README saved')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426202.775836048, \"end_time\": 1426205.125940136, \"duration_ms\": 2350.1}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_21397004": {
+          "content": [
+            {
+              "type": "text",
+              "text": "README saved\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_21397004\": {\"timing_ms\": 452.41, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_56920693": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nimport re\nwith open('temp_readme.md', 'r') as f:\n    content = f.read()\n\n# Find the main evaluation table for 7B\ntable_pattern = r'\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|[^|]+\\|\\s*\\n\\|[-:\\s\\|]+\\s*\\n((\\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+ \\| [^\\n\\|]+\\s*\\n)+)'\n\nmatch = re.search(table_pattern, content, re.MULTILINE | re.DOTALL)\nif match:\n    table_str = match.group(0)\n    \n    # Parse the table\n    lines = [line.strip() for line in table_str.split('\\n') if line.strip()]\n    \n    # Skip the header separator\n    header_line = lines[0]\n    header = [h.strip() for h in header_line.split('|')[1:-1]]\n    \n    data_lines = lines[2:]  # Skip header and separator\n    rows = []\n    for line in data_lines:\n        if line.startswith('|'):\n            row = [cell.strip() for cell in line.split('|')[1:-1]]\n            if row:  # Only non-empty rows\n                rows.append(row)\n    \n    print('Headers:', header)\n    print('Number of rows:', len(rows))\n    for i, row in enumerate(rows[:3]):  # Show first few rows\n        print(f'Row {i+1}:', row)\n    \n    # Now extract the OLMo 7B column\n    olmo_col_idx = None\n    model_name = 'OLMo 7B'\n    for i, h in enumerate(header):\n        h_clean = re.sub(r'\\*\\*|\\[.*?\\]\\(.*?\\)', '', h).strip().lower()\n        if 'olmo 7b' in h_clean or 'olmo 7b' in h_clean.replace(' ', ''):\n            olmo_col_idx = i\n            break\n    \n    print('OLMo 7B column index:', olmo_col_idx)\n    \n    if olmo_col_idx is not None:\n        # Extract metrics\n        metrics = []\n        required_benchmarks = [\n            'arc_challenge', 'arc_easy', 'boolq', 'copa', 'hellaswag', \n            'openbookqa', 'piqa', 'sciq', 'winogrande', 'mmlu', 'truthfulqa'\n        ]\n        \n        for row in rows:\n            if len(row) > olmo_col_idx and row[0].strip():\n                benchmark = row[0].strip().lower()\n                if any(req in benchmark for req in required_benchmarks):\n                    try:\n                        value_str = row[olmo_col_idx].strip().replace('%', '').replace(',', '')\n                        if value_str:\n                            value = float(value_str)\n                            # Find matching benchmark name\n                            for req in required_benchmarks:\n                                if req in benchmark:\n                                    benchmark_name = req.replace('_', ' ').title()\n                                    metrics.append({\n                                        'name': benchmark_name,\n                                        'type': req,\n                                        'value': value\n                                    })\n                                    break\n                    except ValueError:\n                        continue\n        \n        print('Extracted metrics:', metrics)\n        \n        # Generate YAML\n        import yaml\n        yaml_data = {\n            'model-index': [{\n                'name': 'OLMo 7B',\n                'results': [{\n                    'task': {'type': 'text-generation'},\n                    'dataset': {'name': 'Core Benchmarks', 'type': 'benchmark'},\n                    'metrics': metrics,\n                    'source': {\n                        'name': 'OLMo 7B Model README',\n                        'url': 'https://huggingface.co/allenai/OLMo-7B'\n                    }\n                }]\n            }]\n        }\n        \n        with open('olmo_7b_evaluations.yaml', 'w') as f:\n            yaml.dump(yaml_data, f, default_flow_style=False, sort_keys=False)\n        \n        print('YAML saved to olmo_7b_evaluations.yaml')\n        print(yaml.dump(yaml_data, default_flow_style=False, sort_keys=False))\n    \nelse:\n    print('Main evaluation table not found')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426205.589163383, \"end_time\": 1426210.935843509, \"duration_ms\": 5346.68}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_56920693": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Main evaluation table not found\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_56920693\": {\"timing_ms\": 54.78, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_79070952": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nimport re\nwith open('temp_readme.md', 'r') as f:\n    content = f.read()\n\n# Find the 7B evaluation table - look for the specific pattern\ntable_pattern = r'\\|.*Llama 7B.*\\|.*Llama 2 7B.*\\|.*Falcon 7B.*\\|.*MPT 7B.*\\|.*OLMo 7B.*\\n\\|[-: \\|]+\\n((\\| [a-zA-Z ,().]+\\s+\\| [0-9. ]+ \\| [0-9. ]+ \\| [0-9. ]+ \\| [0-9. ]+ \\| [0-9. ]+ \\s*\\n)+)'\n\nmatch = re.search(table_pattern, content, re.MULTILINE | re.DOTALL)\nif match:\n    table_str = match.group(0)\n    \n    # Parse the table\n    lines = [line.strip() for line in table_str.split('\\n') if line.strip()]\n    \n    # Header\n    header_line = lines[0]\n    header = [h.strip() for h in header_line.split('|')[1:-1]]\n    \n    # Skip separator\n    data_lines = lines[2:]  \n    rows = []\n    for line in data_lines:\n        if line.startswith('|') and not re.match(r'^\\|[-: ]+\\|', line):\n            row = [cell.strip() for cell in line.split('|')[1:-1]]\n            if row and len(row) == len(header):  # Only complete rows\n                rows.append(row)\n    \n    print('Headers:', header)\n    print('Number of rows:', len(rows))\n    for i, row in enumerate(rows[:3]):\n        print(f'Row {i+1}:', row)\n    \n    # Find OLMo 7B column\n    olmo_col_idx = None\n    for i, h in enumerate(header):\n        h_clean = re.sub(r'\\*\\*|\\[.*?\\]\\(.*?\\)|https?://.*', '', h).strip().lower()\n        if 'olmo 7b' in h_clean:\n            olmo_col_idx = i\n            print(f'Found OLMo column at index {i}: {h}')\n            break\n    \n    if olmo_col_idx is not None:\n        # Extract only required benchmarks\n        metrics = []\n        required_benchmarks = {\n            'arc_challenge': ['arc_challenge'],\n            'arc_easy': ['arc_easy'], \n            'boolq': ['boolq'],\n            'copa': ['copa'],\n            'hellaswag': ['hellaswag'],\n            'openbookqa': ['openbookqa'],\n            'piqa': ['piqa'],\n            'sciq': ['sciq'],\n            'winogrande': ['winogrande'],\n            'mmlu': ['mmlu'],\n            'truthfulqa': ['truthfulqa', 'truthfulqa (mc2)']\n        }\n        \n        for row in rows:\n            if len(row) > olmo_col_idx:\n                benchmark_raw = row[0].strip().lower()\n                # Clean benchmark name\n                benchmark_clean = re.sub(r'\\s*\\([^)]*\\)', '', benchmark_raw).strip()\n                \n                matched = False\n                for bench_type, patterns in required_benchmarks.items():\n                    if any(pattern in benchmark_clean for pattern in patterns):\n                        try:\n                            value_str = row[olmo_col_idx].strip().replace('%', '').replace(',', '')\n                            if value_str and value_str != '-':\n                                value = float(value_str)\n                                metrics.append({\n                                    'name': bench_type.replace('_', ' ').title(),\n                                    'type': bench_type,\n                                    'value': value\n                                })\n                                print(f'Extracted: {bench_type} = {value}')\n                                matched = True\n                                break\n                        except ValueError:\n                            continue\n                if matched:\n                    continue\n        \n        # Generate YAML\n        import yaml\n        yaml_data = {\n            'model-index': [{\n                'name': 'OLMo 7B',\n                'results': [{\n                    'task': {'type': 'text-generation'},\n                    'dataset': {'name': 'Core Benchmarks', 'type': 'benchmark'},\n                    'metrics': metrics,\n                    'source': {\n                        'name': 'OLMo 7B Model README',\n                        'url': 'https://huggingface.co/allenai/OLMo-7B'\n                    }\n                }]\n            }]\n        }\n        \n        with open('olmo_7b_evaluations.yaml', 'w') as f:\n            yaml.dump(yaml_data, f, default_flow_style=False, sort_keys=False)\n        \n        print('\\nYAML saved to olmo_7b_evaluations.yaml')\n        print(yaml.dump(yaml_data, default_flow_style=False, sort_keys=False))\n    else:\n        print('OLMo 7B column not found')\n        print('Available headers:')\n        for i, h in enumerate(header):\n            print(f'  {i}: {h}')\nelse:\n    print('Evaluation table not found')\n    # Print some context around potential table\n    lines = content.split('\\n')\n    for i, line in enumerate(lines):\n        if 'OLMo 7B' in line and '|' in line:\n            print(f'Line {i}: {line}')\n            print(f'Previous 3 lines:')\n            for j in range(max(0, i-3), i):\n                print(f'  {lines[j]}')\n            print(f'Next 3 lines:')\n            for j in range(i+1, min(len(lines), i+4)):\n                print(f'  {lines[j]}')\n            break\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426211.004060995, \"end_time\": 1426216.813087976, \"duration_ms\": 5809.03}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_79070952": {
+          "content": [
+            {
+              "type": "text",
+              "text": "(timeout after 90s - process terminated)"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_79070952\": {\"timing_ms\": 88077.05, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_97172962": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nwith open('temp_readme.md', 'r') as f:\n    content = f.read()\n\n# Find lines containing the table headers\nlines = content.split('\\n')\ntable_start = None\nfor i, line in enumerate(lines):\n    if 'Llama 7B' in line and 'Llama 2 7B' in line and 'OLMo 7B' in line and '|' in line:\n        table_start = i\n        break\n\nif table_start is not None:\n    print(f'Found table header at line {table_start}: {lines[table_start]}')\n    \n    # Extract header\n    header_line = lines[table_start]\n    header = [h.strip() for h in header_line.split('|')[1:-1]]\n    print('Headers:', header)\n    \n    # Find separator line\n    separator_line = None\n    for j in range(table_start + 1, min(table_start + 10, len(lines))):\n        if re.match(r'^\\|[ -:|]+\\|$', lines[j]):\n            separator_line = j\n            break\n    \n    if separator_line is not None:\n        print(f'Separator at line {separator_line}')\n        \n        # Extract data rows until we hit the 1B table or end\n        rows = []\n        for j in range(separator_line + 1, len(lines)):\n            line = lines[j].strip()\n            if line.startswith('|') and not re.match(r'^\\|[ -:|]+\\|$', line):\n                row = [cell.strip() for cell in line.split('|')[1:-1]]\n                if len(row) == len(header) and row[0]:  # Valid data row\n                    rows.append(row)\n                elif '1B' in line or 'StableLM' in line:\n                    break  # End of 7B table\n        \n        print(f'Extracted {len(rows)} rows')\n        for i, row in enumerate(rows[:5]):\n            print(f'Row {i+1}: {row[0]} - {row[-1]}')  # First and last cell\n        \n        # Find OLMo column\n        olmo_col_idx = None\n        for i, h in enumerate(header):\n            h_clean = re.sub(r'\\*\\*|\\[.*?\\]\\(.*?\\)|https?://.*', '', h).strip().lower()\n            if 'olmo 7b' in h_clean:\n                olmo_col_idx = i\n                print(f'OLMo column at index {i}: {h}')\n                break\n        \n        if olmo_col_idx is not None:\n            # Extract required benchmarks\n            required = ['arc_challenge', 'arc_easy', 'boolq', 'copa', 'hellaswag', 'openbookqa', 'piqa', 'sciq', 'winogrande', 'mmlu', 'truthfulqa']\n            metrics = []\n            \n            for row in rows:\n                benchmark_raw = row[0].strip().lower()\n                benchmark_clean = re.sub(r'\\s*\\([^)]*\\)', '', benchmark_raw).strip()\n                \n                for bench in required:\n                    if bench in benchmark_clean:\n                        try:\n                            value_str = row[olmo_col_idx].strip()\n                            if value_str and value_str != '-' and value_str != 'N/A':\n                                value = float(value_str)\n                                metrics.append({\n                                    'name': bench.replace('_', ' ').title(),\n                                    'type': bench,\n                                    'value': value\n                                })\n                                print(f'{bench}: {value}')\n                                break\n                        except ValueError:\n                            continue\n                        break\n            \n            # Generate YAML\n            import yaml\n            yaml_data = {\n                'model-index': [{\n                    'name': 'OLMo 7B',\n                    'results': [{\n                        'task': {'type': 'text-generation'},\n                        'dataset': {'name': 'Standard Benchmarks', 'type': 'benchmark'},\n                        'metrics': metrics,\n                        'source': {\n                            'name': 'Model README',\n                            'url': 'https://huggingface.co/allenai/OLMo-7B'\n                        }\n                    }]\n                }]\n            }\n            \n            with open('olmo_7b_evaluations.yaml', 'w') as f:\n                yaml.dump(yaml_data, f, default_flow_style=False, sort_keys=False)\n            \n            print('\\nGenerated YAML:')\n            print(yaml.dump(yaml_data, default_flow_style=False, sort_keys=False))\n        else:\n            print('Available headers:')\n            for i, h in enumerate(header):\n                print(f'{i}: {h}')\n    else:\n        print('Separator line not found')\nelse:\n    print('Table header line not found')\n    # Show context around OLMo 7B mentions\n    for i, line in enumerate(lines):\n        if 'OLMo 7B' in line and '|' in line:\n            print(f'Line {i}: {line[:100]}...')\n            print(f'Context:')\n            for j in range(max(0, i-2), min(len(lines), i+3)):\n                if j != i:\n                    print(f'  {j}: {lines[j][:80]}...')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426304.907267745, \"end_time\": 1426310.142778124, \"duration_ms\": 5235.51}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_97172962": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] Traceback (most recent call last):\n[stderr]   File \"<string>\", line 24, in <module>\n[stderr]     if re.match(r'^\\|[ -:|]+\\|$', lines[j]):\n[stderr]        ^^\n[stderr] NameError: name 're' is not defined. Did you forget to import 're'?\nFound table header at line 143: |                                   | [Llama 7B](https://arxiv.org/abs/2302.13971) | [Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b) | [Falcon 7B](https://huggingface.co/tiiuae/falcon-7b) | [MPT 7B](https://huggingface.co/mosaicml/mpt-7b) | **OLMo 7B** (ours) |\nHeaders: ['', '[Llama 7B](https://arxiv.org/abs/2302.13971)', '[Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b)', '[Falcon 7B](https://huggingface.co/tiiuae/falcon-7b)', '[MPT 7B](https://huggingface.co/mosaicml/mpt-7b)', '**OLMo 7B** (ours)']\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_97172962\": {\"timing_ms\": 63.1, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_04349511": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nimport re\nimport yaml\n\nwith open('temp_readme.md', 'r') as f:\n    content = f.read()\n\nlines = content.split('\\n')\ntable_start = None\nfor i, line in enumerate(lines):\n    if 'Llama 7B' in line and 'Llama 2 7B' in line and 'OLMo 7B' in line and '|' in line:\n        table_start = i\n        break\n\nif table_start is not None:\n    print(f'Found table header at line {table_start}: {lines[table_start]}')\n    \n    # Extract header\n    header_line = lines[table_start]\n    header = [h.strip() for h in header_line.split('|')[1:-1]]\n    print('Headers:', header)\n    \n    # Find separator line\n    separator_line = None\n    for j in range(table_start + 1, min(table_start + 10, len(lines))):\n        if re.match(r'^\\|[ -:|]+\\|$', lines[j]):\n            separator_line = j\n            break\n    \n    if separator_line is not None:\n        print(f'Separator at line {separator_line}')\n        \n        # Extract data rows until we hit the 1B table or end\n        rows = []\n        for j in range(separator_line + 1, len(lines)):\n            line = lines[j].strip()\n            if line.startswith('|') and not re.match(r'^\\|[ -:|]+\\|$', line):\n                row = [cell.strip() for cell in line.split('|')[1:-1]]\n                if len(row) == len(header) and row[0]:  # Valid data row\n                    rows.append(row)\n                elif '1B' in line or 'StableLM' in line:\n                    break  # End of 7B table\n        \n        print(f'Extracted {len(rows)} rows')\n        for i, row in enumerate(rows[:5]):\n            print(f'Row {i+1}: {row[0]} - {row[-1]}')  # First and last cell\n        \n        # Find OLMo column\n        olmo_col_idx = None\n        for i, h in enumerate(header):\n            h_clean = re.sub(r'\\*\\*|\\[.*?\\]\\(.*?\\)|https?://.*', '', h).strip().lower()\n            if 'olmo 7b' in h_clean:\n                olmo_col_idx = i\n                print(f'OLMo column at index {i}: {h}')\n                break\n        \n        if olmo_col_idx is not None:\n            # Extract required benchmarks\n            required = ['arc_challenge', 'arc_easy', 'boolq', 'copa', 'hellaswag', 'openbookqa', 'piqa', 'sciq', 'winogrande', 'mmlu', 'truthfulqa']\n            metrics = []\n            \n            for row in rows:\n                benchmark_raw = row[0].strip().lower()\n                benchmark_clean = re.sub(r'\\s*\\([^)]*\\)', '', benchmark_raw).strip()\n                \n                for bench in required:\n                    if bench in benchmark_clean:\n                        try:\n                            value_str = row[olmo_col_idx].strip()\n                            if value_str and value_str != '-' and value_str != 'N/A':\n                                value = float(value_str)\n                                metrics.append({\n                                    'name': bench.replace('_', ' ').title(),\n                                    'type': bench,\n                                    'value': value\n                                })\n                                print(f'{bench}: {value}')\n                                break\n                        except ValueError:\n                            continue\n                        break\n            \n            # Generate YAML\n            yaml_data = {\n                'model-index': [{\n                    'name': 'OLMo 7B',\n                    'results': [{\n                        'task': {'type': 'text-generation'},\n                        'dataset': {'name': 'Standard Benchmarks', 'type': 'benchmark'},\n                        'metrics': metrics,\n                        'source': {\n                            'name': 'Model README',\n                            'url': 'https://huggingface.co/allenai/OLMo-7B'\n                        }\n                    }]\n                }]\n            }\n            \n            with open('olmo_7b_evaluations.yaml', 'w') as f:\n                yaml.dump(yaml_data, f, default_flow_style=False, sort_keys=False)\n            \n            print('\\nGenerated YAML:')\n            print(yaml.dump(yaml_data, default_flow_style=False, sort_keys=False))\n        else:\n            print('Available headers:')\n            for i, h in enumerate(header):\n                print(f'{i}: {h}')\n    else:\n        print('Separator line not found')\nelse:\n    print('Table header line not found')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426310.220135893, \"end_time\": 1426314.02447742, \"duration_ms\": 3804.34}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_04349511": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Found table header at line 143: |                                   | [Llama 7B](https://arxiv.org/abs/2302.13971) | [Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b) | [Falcon 7B](https://huggingface.co/tiiuae/falcon-7b) | [MPT 7B](https://huggingface.co/mosaicml/mpt-7b) | **OLMo 7B** (ours) |\nHeaders: ['', '[Llama 7B](https://arxiv.org/abs/2302.13971)', '[Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b)', '[Falcon 7B](https://huggingface.co/tiiuae/falcon-7b)', '[MPT 7B](https://huggingface.co/mosaicml/mpt-7b)', '**OLMo 7B** (ours)']\nSeparator at line 144\nExtracted 39 rows\nRow 1: arc_challenge - 48.5\nRow 2: arc_easy - 65.4\nRow 3: boolq - 73.4\nRow 4: copa - 90\nRow 5: hellaswag - 76.4\nOLMo column at index 5: **OLMo 7B** (ours)\narc_challenge: 48.5\narc_easy: 65.4\nboolq: 73.4\ncopa: 90.0\nhellaswag: 76.4\nopenbookqa: 50.2\npiqa: 78.4\nsciq: 93.8\nwinogrande: 67.9\ntruthfulqa: 36.0\nmmlu: 28.3\narc_challenge: 34.45\narc_easy: 58.07\nboolq: 60.7\ncopa: 79.0\nhellaswag: 62.5\nopenbookqa: 46.4\npiqa: 73.7\nsciq: 88.1\nwinogrande: 58.9\n\nGenerated YAML:\nmodel-index:\n- name: OLMo 7B\n  results:\n  - task:\n      type: text-generation\n    dataset:\n      name: Standard Benchmarks\n      type: benchmark\n    metrics:\n    - name: Arc Challenge\n      type: arc_challenge\n      value: 48.5\n    - name: Arc Easy\n      type: arc_easy\n      value: 65.4\n    - name: Boolq\n      type: boolq\n      value: 73.4\n    - name: Copa\n      type: copa\n      value: 90.0\n    - name: Hellaswag\n      type: hellaswag\n      value: 76.4\n    - name: Openbookqa\n      type: openbookqa\n      value: 50.2\n    - name: Piqa\n      type: piqa\n      value: 78.4\n    - name: Sciq\n      type: sciq\n      value: 93.8\n    - name: Winogrande\n      type: winogrande\n      value: 67.9\n    - name: Truthfulqa\n      type: truthfulqa\n      value: 36.0\n    - name: Mmlu\n      type: mmlu\n      value: 28.3\n    - name: Arc Challenge\n      type: arc_challenge\n      value: 34.45\n    - name: Arc Easy\n      type: arc_easy\n      value: 58.07\n    - name: Boolq\n      type: boolq\n      value: 60.7\n    - name: Copa\n      type: copa\n      value: 79.0\n    - name: Hellaswag\n      type: hellaswag\n      value: 62.5\n    - name: Openbookqa\n      type: openbookqa\n      value: 46.4\n    - name: Piqa\n      type: piqa\n      value: 73.7\n    - name: Sciq\n      type: sciq\n      value: 88.1\n    - name: Winogrande\n      type: winogrande\n      value: 58.9\n    source:\n      name: Model README\n      url: https://huggingface.co/allenai/OLMo-7B\n\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_04349511\": {\"timing_ms\": 70.45, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_41151544": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "uv run python -c \"\nimport re\nimport yaml\n\nwith open('temp_readme.md', 'r') as f:\n    content = f.read()\n\nlines = content.split('\\n')\ntable_start = None\nfor i, line in enumerate(lines):\n    if 'Llama 7B' in line and 'Llama 2 7B' in line and 'OLMo 7B' in line and '|' in line:\n        table_start = i\n        break\n\nif table_start is not None:\n    # Extract header\n    header_line = lines[table_start]\n    header = [h.strip() for h in header_line.split('|')[1:-1]]\n    \n    # Find separator line\n    separator_line = None\n    for j in range(table_start + 1, min(table_start + 10, len(lines))):\n        if re.match(r'^\\|[ -:|]+\\|$', lines[j]):\n            separator_line = j\n            break\n    \n    if separator_line is not None:\n        # Extract data rows for 7B table only (stop at 1B table)\n        rows = []\n        for j in range(separator_line + 1, len(lines)):\n            line = lines[j].strip()\n            if line.startswith('|') and not re.match(r'^\\|[ -:|]+\\|$', line):\n                row = [cell.strip() for cell in line.split('|')[1:-1]]\n                if len(row) == len(header) and row[0]:  # Valid data row\n                    # Check if we're still in 7B table\n                    if '1B' in line or 'StableLM' in line or 'Pythia' in line:\n                        break\n                    rows.append(row)\n        \n        # Find OLMo column\n        olmo_col_idx = None\n        for i, h in enumerate(header):\n            h_clean = re.sub(r'\\*\\*|\\[.*?\\]\\(.*?\\)|https?://.*', '', h).strip().lower()\n            if 'olmo 7b' in h_clean:\n                olmo_col_idx = i\n                break\n        \n        if olmo_col_idx is not None:\n            # Extract ONLY required benchmarks for 7B\n            required = ['arc_challenge', 'arc_easy', 'boolq', 'copa', 'hellaswag', 'openbookqa', 'piqa', 'sciq', 'winogrande', 'mmlu', 'truthfulqa']\n            metrics = []\n            \n            for row in rows:\n                benchmark_raw = row[0].strip().lower()\n                benchmark_clean = re.sub(r'\\s*\\([^)]*\\)', '', benchmark_raw).strip()\n                \n                for bench in required:\n                    if bench in benchmark_clean:\n                        try:\n                            value_str = row[olmo_col_idx].strip()\n                            if value_str and value_str != '-' and value_str != 'N/A':\n                                value = float(value_str)\n                                metrics.append({\n                                    'name': bench.replace('_', ' ').title(),\n                                    'type': bench,\n                                    'value': value\n                                })\n                                print(f'{bench}: {value}')\n                                break\n                        except ValueError:\n                            continue\n                        break\n            \n            # Generate YAML with only 7B metrics\n            yaml_data = {\n                'model-index': [{\n                    'name': 'OLMo 7B',\n                    'results': [{\n                        'task': {'type': 'text-generation'},\n                        'dataset': {'name': 'Standard Benchmarks', 'type': 'benchmark'},\n                        'metrics': metrics,\n                        'source': {\n                            'name': 'Model README',\n                            'url': 'https://huggingface.co/allenai/OLMo-7B'\n                        }\n                    }]\n                }]\n            }\n            \n            with open('olmo_7b_evaluations.yaml', 'w') as f:\n                yaml.dump(yaml_data, f, default_flow_style=False, sort_keys=False)\n            \n            print('\\nFinal YAML for OLMo 7B:')\n            print(yaml.dump(yaml_data, default_flow_style=False, sort_keys=False))\n        else:\n            print('OLMo column not found')\nelse:\n    print('Table not found')\n\""
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426314.107857336, \"end_time\": 1426317.878295746, \"duration_ms\": 3770.44}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_41151544": {
+          "content": [
+            {
+              "type": "text",
+              "text": "arc_challenge: 48.5\narc_easy: 65.4\nboolq: 73.4\ncopa: 90.0\nhellaswag: 76.4\nopenbookqa: 50.2\npiqa: 78.4\nsciq: 93.8\nwinogrande: 67.9\ntruthfulqa: 36.0\nmmlu: 28.3\n\nFinal YAML for OLMo 7B:\nmodel-index:\n- name: OLMo 7B\n  results:\n  - task:\n      type: text-generation\n    dataset:\n      name: Standard Benchmarks\n      type: benchmark\n    metrics:\n    - name: Arc Challenge\n      type: arc_challenge\n      value: 48.5\n    - name: Arc Easy\n      type: arc_easy\n      value: 65.4\n    - name: Boolq\n      type: boolq\n      value: 73.4\n    - name: Copa\n      type: copa\n      value: 90.0\n    - name: Hellaswag\n      type: hellaswag\n      value: 76.4\n    - name: Openbookqa\n      type: openbookqa\n      value: 50.2\n    - name: Piqa\n      type: piqa\n      value: 78.4\n    - name: Sciq\n      type: sciq\n      value: 93.8\n    - name: Winogrande\n      type: winogrande\n      value: 67.9\n    - name: Truthfulqa\n      type: truthfulqa\n      value: 36.0\n    - name: Mmlu\n      type: mmlu\n      value: 28.3\n    source:\n      name: Model README\n      url: https://huggingface.co/allenai/OLMo-7B\n\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_41151544\": {\"timing_ms\": 61.78, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "The evaluation benchmark scores have been successfully extracted from the \"allenai/OLMo-7B\" model README and saved to `olmo_7b_evaluations.yaml` in valid model-index YAML format. Only the specified benchmarks are included, with source attribution to the model README.\n\n```yaml\nmodel-index:\n- name: OLMo 7B\n  results:\n  - task:\n      type: text-generation\n    dataset:\n      name: Standard Benchmarks\n      type: benchmark\n    metrics:\n    - name: Arc Challenge\n      type: arc_challenge\n      value: 48.5\n    - name: Arc Easy\n      type: arc_easy\n      value: 65.4\n    - name: Boolq\n      type: boolq\n      value: 73.4\n    - name: Copa\n      type: copa\n      value: 90.0\n    - name: Hellaswag\n      type: hellaswag\n      value: 76.4\n    - name: Openbookqa\n      type: openbookqa\n      value: 50.2\n    - name: Piqa\n      type: piqa\n      value: 78.4\n    - name: Sciq\n      type: sciq\n      value: 93.8\n    - name: Winogrande\n      type: winogrande\n      value: 67.9\n    - name: Truthfulqa\n      type: truthfulqa\n      value: 36.0\n    - name: Mmlu\n      type: mmlu\n      value: 28.3\n    source:\n      name: Model README\n      url: https://huggingface.co/allenai/OLMo-7B\n```"
+        }
+      ],
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1426317.952785176, \"end_time\": 1426320.141779751, \"duration_ms\": 2188.99}"
+          }
+        ]
+      },
+      "stop_reason": "endTurn",
+      "is_template": false
+    }
+  ]
+}

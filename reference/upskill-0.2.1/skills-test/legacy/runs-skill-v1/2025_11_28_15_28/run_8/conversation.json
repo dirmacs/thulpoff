@@ -1,0 +1,139 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "# One-Shot Evaluation Extraction Task\n\nExtract evaluation benchmark scores from the Hugging Face model \"allenai/OLMo-7B\" and save them to a YAML file named `olmo_7b_evaluations.yaml` in the current directory.\n\n## Requirements:\n\n1. Use the hugging-face-evaluation-manager skill to extract evaluation data from the model's README\n2. Filter the results to include ONLY the following benchmark types:\n   - arc_challenge\n   - arc_easy\n   - boolq\n   - copa\n   - hellaswag\n   - openbookqa\n   - piqa\n   - sciq\n   - winogrande\n   - mmlu\n   - truthfulqa\n3. Save the output in valid model-index YAML format to `olmo_7b_evaluations.yaml`\n4. Do NOT include training hyperparameters, model architecture specs, or random baseline scores\n5. Include the source attribution pointing to the model README\n\nThe output file should be valid YAML that could be directly added to a model card's metadata section.\n"
+        }
+      ],
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "fc_64541667-b46f-44dc-8c3b-47605edda249": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "ls -R ../skills/hf_model_evaluation"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1185012.395713079, \"end_time\": 1185012.898273607, \"duration_ms\": 502.56}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "fc_64541667-b46f-44dc-8c3b-47605edda249": {
+          "content": [
+            {
+              "type": "text",
+              "text": "../skills/hf_model_evaluation:\nSKILL.md\nexamples\nrequirements.txt\nscripts\n\n../skills/hf_model_evaluation/examples:\nUSAGE_EXAMPLES.md\nartificial_analysis_to_hub.py\nexample_readme_tables.md\nmetric_mapping.json\n\n../skills/hf_model_evaluation/scripts:\n__pycache__\nevaluation_manager.py\ninspect_eval_uv.py\nrun_eval_job.py\ntest_extraction.py\n\n../skills/hf_model_evaluation/scripts/__pycache__:\nevaluation_manager.cpython-313.pyc\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"fc_64541667-b46f-44dc-8c3b-47605edda249\": {\"timing_ms\": 8.48, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "fc_aea213d7-d311-4394-9f4f-45d32f941ea7": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "sed -n '1,200p' ../skills/hf_model_evaluation/SKILL.md"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1185012.916268003, \"end_time\": 1185013.344294372, \"duration_ms\": 428.03}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "fc_aea213d7-d311-4394-9f4f-45d32f941ea7": {
+          "content": [
+            {
+              "type": "text",
+              "text": "---\nname: hugging-face-evaluation-manager\ndescription: Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content and importing scores from Artificial Analysis API. Works with the model-index metadata format.\n---\n\n# Overview\nThis skill provides tools to add structured evaluation results to Hugging Face model cards. It supports two primary methods for adding evaluation data: extracting existing evaluation tables from README content and importing benchmark scores from Artificial Analysis.\n\n## Integration with HF Ecosystem\n- **Model Cards**: Updates model-index metadata for leaderboard integration\n- **Artificial Analysis**: Direct API integration for benchmark imports\n- **Papers with Code**: Compatible with their model-index specification\n- **Jobs**: Run evaluations directly on Hugging Face Jobs with `uv` integration\n\n# Version\n1.2.0\n\n# Dependencies\n- huggingface_hub>=0.26.0\n- python-dotenv>=1.2.1\n- pyyaml>=6.0.3\n- requests>=2.32.5\n- inspect-ai>=0.3.0\n- re (built-in)\n\n# Core Capabilities\n\n## 1. Extract Evaluation Tables from README\n- **Parse Markdown Tables**: Automatically detect and parse evaluation tables in model READMEs\n- **Multiple Table Support**: Handle models with multiple benchmark tables\n- **Format Detection**: Recognize common evaluation table formats (benchmarks as rows/columns, or transposed with models as rows)\n- **Smart Model Matching**: Find and extract scores for specific models in comparison tables\n- **Smart Conversion**: Convert parsed tables to model-index YAML format\n\n## 2. Import from Artificial Analysis\n- **API Integration**: Fetch benchmark scores directly from Artificial Analysis\n- **Automatic Formatting**: Convert API responses to model-index format\n- **Metadata Preservation**: Maintain source attribution and URLs\n- **PR Creation**: Automatically create pull requests with evaluation updates\n\n## 3. Model-Index Management\n- **YAML Generation**: Create properly formatted model-index entries\n- **Merge Support**: Add evaluations to existing model cards without overwriting\n- **Validation**: Ensure compliance with Papers with Code specification\n- **Batch Operations**: Process multiple models efficiently\n\n## 4. Run Evaluations on HF Jobs\n- **Inspect-AI Integration**: Run standard evaluations using the `inspect-ai` library\n- **UV Integration**: Seamlessly run Python scripts with ephemeral dependencies on HF infrastructure\n- **Zero-Config**: No Dockerfiles or Space management required\n- **Hardware Selection**: Configure CPU or GPU hardware for the evaluation job\n- **Secure Execution**: Handles API tokens safely via secrets passed through the CLI\n\n# Usage Instructions\n\nThe skill includes Python scripts in `scripts/` to perform operations.\n\n### Prerequisites\n- Install dependencies: `uv add huggingface_hub python-dotenv pyyaml inspect-ai`\n- Set `HF_TOKEN` environment variable with Write-access token\n- For Artificial Analysis: Set `AA_API_KEY` environment variable\n- Activate virtual environment: `source .venv/bin/activate`\n\n### Method 1: Extract from README\n\nExtract evaluation tables from a model's existing README and add them to model-index metadata.\n\n**Basic Usage:**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\"\n```\n\n**With Custom Task Type:**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --task-type \"text-generation\" \\\n  --dataset-name \"Custom Benchmarks\"\n```\n\n**Dry Run (Preview Only):**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --dry-run\n```\n\n#### Supported Table Formats\n\n**Format 1: Benchmarks as Rows**\n```markdown\n| Benchmark | Score |\n|-----------|-------|\n| MMLU      | 85.2  |\n| HumanEval | 72.5  |\n```\n\n**Format 2: Benchmarks as Columns**\n```markdown\n| MMLU | HumanEval | GSM8K |\n|------|-----------|-------|\n| 85.2 | 72.5      | 91.3  |\n```\n\n**Format 3: Multiple Metrics**\n```markdown\n| Benchmark | Accuracy | F1 Score |\n|-----------|----------|----------|\n| MMLU      | 85.2     | 0.84     |\n```\n\n**Format 4: Transposed Tables (Models as Rows)**\n```markdown\n| Model          | MMLU | HumanEval | GSM8K | ARC  |\n|----------------|------|-----------|-------|------|\n| GPT-4          | 86.4 | 67.0      | 92.0  | 96.3 |\n| Claude-3       | 86.8 | 84.9      | 95.0  | 96.4 |\n| **Your-Model** | 85.2 | 72.5      | 91.3  | 95.8 |\n```\n\nIn this format, the script will:\n- Detect that models are in rows (first column) and benchmarks in columns (header)\n- Find the row matching your model name (handles bold/markdown formatting)\n- Extract all benchmark scores from that specific row only\n\n#### Validating Extraction Results\n\n**CRITICAL**: Always validate extracted results before creating a PR or pushing changes.\n\nAfter running `extract-readme`, you MUST:\n\n1. **Use `--dry-run` first** to preview the extraction:\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --dry-run\n```\n\n2. **Manually verify the output**:\n   - Check that the correct model's scores were extracted (not other models)\n   - Verify benchmark names are correct\n   - Confirm all expected benchmarks are present\n   - Ensure numeric values match the README exactly\n\n3. **For transposed tables** (models as rows):\n   - Verify only ONE model's row was extracted\n   - Check that it matched the correct model name\n   - Look for warnings like \"Could not find model 'X' in transposed table\"\n   - If scores from multiple models appear, the table format was misdetected\n\n4. **Compare against the source**:\n   - Open the model README in a browser\n   - Cross-reference each extracted score with the table\n   - Verify no scores are mixed from different rows/columns\n\n5. **Common validation failures**:\n   - **Multiple models extracted**: Wrong table format detected\n   - **Missing benchmarks**: Column headers not recognized\n   - **Wrong scores**: Matched wrong model row or column\n   - **Empty metrics list**: Table not detected or parsing failed\n\n**Example validation workflow**:\n```bash\n# Step 1: Dry run to preview\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --dry-run\n\n# Step 2: If model name not found in table, script shows available models\n# \u26a0 Could not find model 'Olmo-3-1125-32B' in transposed table\n#\n# Available models in table:\n#   1. **Open-weight Models**\n#   2. Qwen-2.5-32B\n#   ...\n#   12. **Olmo 3-32B**\n#\n# Please select the correct model name from the list above.\n\n# Step 3: Re-run with the correct model name\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --model-name-override \"**Olmo 3-32B**\" \\\n  --dry-run\n\n# Step 4: Review the YAML output carefully\n# Verify: Are these all benchmarks for Olmo-3-32B ONLY?\n# Verify: Do the scores match the README table?\n\n# Step 5: If validation passes, create PR\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --model-name-override \"**Olmo 3-32B**\" \\\n  --create-pr\n\n# Step 6: Validate the model card after update\npython scripts/evaluation_manager.py show \\\n  --repo-id \"allenai/Olmo-3-1125-32B\"\n```\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"fc_aea213d7-d311-4394-9f4f-45d32f941ea7\": {\"timing_ms\": 31.91, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "I hit an internal error while calling the model: hf request failed for model 'openai/gpt-oss-120b' (code: tool_use_failed): Tool call validation failed: tool call validation failed: attempted to call tool 'run' which was not in request.tools. See fast-agent-error for additional details."
+        }
+      ],
+      "channels": {
+        "fast-agent-error": [
+          {
+            "type": "text",
+            "text": "hf request failed for model 'openai/gpt-oss-120b' (code: tool_use_failed): Tool call validation failed: tool call validation failed: attempted to call tool 'run' which was not in request.tools"
+          }
+        ],
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1185013.38577174, \"end_time\": 1185014.368828665, \"duration_ms\": 983.06}"
+          }
+        ]
+      },
+      "stop_reason": "error",
+      "is_template": false
+    }
+  ]
+}

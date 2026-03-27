@@ -1,0 +1,145 @@
+model-index:
+  - name: "OLMo 7B"
+    results:
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "ARC Challenge"
+          type: "arc_challenge"
+        metrics:
+          - name: "Accuracy"
+            type: "arc_challenge"
+            value: 48.5
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "ARC Easy"
+          type: "arc_easy"
+        metrics:
+          - name: "Accuracy"
+            type: "arc_easy"
+            value: 65.4
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "BoolQ"
+          type: "boolq"
+        metrics:
+          - name: "Accuracy"
+            type: "boolq"
+            value: 73.4
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "COPA"
+          type: "copa"
+        metrics:
+          - name: "Accuracy"
+            type: "copa"
+            value: 90.0
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "HellaSwag"
+          type: "hellaswag"
+        metrics:
+          - name: "Accuracy"
+            type: "hellaswag"
+            value: 76.4
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "OpenBookQA"
+          type: "openbookqa"
+        metrics:
+          - name: "Accuracy"
+            type: "openbookqa"
+            value: 50.2
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "PIQA"
+          type: "piqa"
+        metrics:
+          - name: "Accuracy"
+            type: "piqa"
+            value: 78.4
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "SciQ"
+          type: "sciq"
+        metrics:
+          - name: "Accuracy"
+            type: "sciq"
+            value: 93.8
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "Winogrande"
+          type: "winogrande"
+        metrics:
+          - name: "Accuracy"
+            type: "winogrande"
+            value: 67.9
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "MMLU (5-shot MC)"
+          type: "mmlu"
+        metrics:
+          - name: "Accuracy"
+            type: "mmlu"
+            value: 28.3
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"
+
+      - task:
+          type: "text-generation"
+        dataset:
+          name: "TruthfulQA (MC2)"
+          type: "truthfulqa"
+        metrics:
+          - name: "Accuracy"
+            type: "truthfulqa"
+            value: 36.0
+        source:
+          name: "Model README"
+          url: "https://huggingface.co/allenai/OLMo-7B"

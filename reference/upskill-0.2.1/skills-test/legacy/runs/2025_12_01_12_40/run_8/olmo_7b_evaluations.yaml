@@ -1,0 +1,91 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: text-generation
+          name: arc_challenge
+        dataset: ARC-Challenge
+        metrics:
+          - type: accuracy
+            value: 48.5
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: arc_easy
+        dataset: ARC-Easy
+        metrics:
+          - type: accuracy
+            value: 65.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: boolq
+        dataset: BoolQ
+        metrics:
+          - type: accuracy
+            value: 73.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: copa
+        dataset: COPA
+        metrics:
+          - type: accuracy
+            value: 90
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: hellaswag
+        dataset: Hellaswag
+        metrics:
+          - type: accuracy
+            value: 76.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: openbookqa
+        dataset: OpenBookQA
+        metrics:
+          - type: accuracy
+            value: 50.2
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: piqa
+        dataset: PiQA
+        metrics:
+          - type: accuracy
+            value: 78.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: sciq
+        dataset: SciQ
+        metrics:
+          - type: accuracy
+            value: 93.8
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: winogrande
+        dataset: Winogrande
+        metrics:
+          - type: accuracy
+            value: 67.9
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: mmlu
+        dataset: MMLU
+        metrics:
+          - type: accuracy
+            value: 28.3
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+          name: truthfulqa
+        dataset: TruthfulQA
+        metrics:
+          - type: accuracy
+            value: 36.0
+        source: https://huggingface.co/allenai/OLMo-7B#readme

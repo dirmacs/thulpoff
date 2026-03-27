@@ -1,0 +1,5 @@
+Error updating model card: (Request ID: Root=1-6929bfee-3d4e5bc103074ee418bc4c4e;c445fc15-acd8-4c22-9613-2389745f9b07)
+
+403 Forbidden: Forbidden: pass `create_pr=1` as a query parameter to create a Pull Request.
+Cannot access content at: https://huggingface.co/api/models/allenai/OLMo-7B/commit/main.
+Make sure your token has the correct permissions.

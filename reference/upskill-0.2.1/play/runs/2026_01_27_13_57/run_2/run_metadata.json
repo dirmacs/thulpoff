@@ -1,0 +1,7 @@
+{
+  "model": "haiku",
+  "task": "\"Provides guidance for writing optimized CUDA kernels for H100 GPUs (sm_90) targeting diffusers library models like LTX-Video, Stable Diffusion, and DiT. Applies when working with attention, normalization, RoPE, activations, or custom kernel development for diffusion transformers.\"",
+  "batch_id": "2026_01_27_13_57",
+  "run_number": 2,
+  "timestamp": "2026-01-27T14:09:58.701643"
+}

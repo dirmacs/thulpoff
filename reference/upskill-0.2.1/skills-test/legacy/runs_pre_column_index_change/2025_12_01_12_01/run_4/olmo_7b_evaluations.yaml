@@ -1,0 +1,125 @@
+model-index:
+  evaluations:
+    - name: arc_challenge
+      dataset: arc_challenge
+      task:
+        type: question-answering
+      metrics:
+        - name: accuracy
+          value: 48.5
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: arc_easy
+      dataset: arc_easy
+      task:
+        type: question-answering
+      metrics:
+        - name: accuracy
+          value: 65.4
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: boolq
+      dataset: boolq
+      task:
+        type: question-answering
+      metrics:
+        - name: accuracy
+          value: 73.4
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: copa
+      dataset: copa
+      task:
+        type: commonsense-reasoning
+      metrics:
+        - name: accuracy
+          value: 90.0
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: hellaswag
+      dataset: hellaswag
+      task:
+        type: commonsense-reasoning
+      metrics:
+        - name: accuracy
+          value: 76.4
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: openbookqa
+      dataset: openbookqa
+      task:
+        type: question-answering
+      metrics:
+        - name: accuracy
+          value: 50.2
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: piqa
+      dataset: piqa
+      task:
+        type: physical-reasoning
+      metrics:
+        - name: accuracy
+          value: 78.4
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: sciq
+      dataset: sciq
+      task:
+        type: scientific-question-answering
+      metrics:
+        - name: accuracy
+          value: 93.8
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: winogrande
+      dataset: winogrande
+      task:
+        type: pronoun-resolution
+      metrics:
+        - name: accuracy
+          value: 67.9
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: mmlu
+      dataset: mmlu
+      task:
+        type: multiple-choice
+      config: "5-shot (MC)"
+      metrics:
+        - name: accuracy
+          value: 28.3
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+    - name: truthfulqa
+      dataset: truthfulqa
+      task:
+        type: question-answering
+      config: "MC2"
+      metrics:
+        - name: accuracy
+          value: 36.0
+          unit: percentage
+      source:
+        name: "allenai/OLMo-7B README"
+        url: "https://huggingface.co/allenai/OLMo-7B"

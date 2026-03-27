@@ -1,0 +1,436 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "# One-Shot Evaluation Extraction Task\n\nExtract evaluation benchmark scores from the Hugging Face model \"allenai/OLMo-7B\" and save them to a YAML file named `olmo_7b_evaluations.yaml` in the current directory.\n\n## Requirements:\n\n1. Use the hugging-face-evaluation-manager skill to extract evaluation data from the model's README\n2. Filter the results to include ONLY the following benchmark types:\n   - arc_challenge\n   - arc_easy\n   - boolq\n   - copa\n   - hellaswag\n   - openbookqa\n   - piqa\n   - sciq\n   - winogrande\n   - mmlu\n   - truthfulqa\n3. Save the output in valid model-index YAML format to `olmo_7b_evaluations.yaml`\n4. Do NOT include training hyperparameters, model architecture specs, or random baseline scores\n5. Include the source attribution pointing to the model README\n\nThe output file should be valid YAML that could be directly added to a model card's metadata section.\n"
+        }
+      ],
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_HsHvKNuaqijAlsN36o9wsfiP": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && cat skills/hf_model_evaluation/SKILL.md"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188160.17906018, \"end_time\": 1188161.93223231, \"duration_ms\": 1753.17}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_HsHvKNuaqijAlsN36o9wsfiP": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[stderr] cat: skills/hf_model_evaluation/SKILL.md: No such file or directory\nprocess exit code was 1"
+            }
+          ],
+          "isError": true
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_HsHvKNuaqijAlsN36o9wsfiP\": {\"timing_ms\": 5.32, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_2C7RbJ8p9qHZazf3RokL4J4V": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && cat ../skills/hf_model_evaluation/SKILL.md"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188161.946647882, \"end_time\": 1188163.454635498, \"duration_ms\": 1507.99}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_2C7RbJ8p9qHZazf3RokL4J4V": {
+          "content": [
+            {
+              "type": "text",
+              "text": "---\nname: hugging-face-evaluation-manager\ndescription: Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content and importing scores from Artificial Analysis API. Works with the model-index metadata format.\n---\n\n# Overview\nThis skill provides tools to add structured evaluation results to Hugging Face model cards. It supports two primary methods for adding evaluation data: extracting existing evaluation tables from README content and importing benchmark scores from Artificial Analysis.\n\n## Integration with HF Ecosystem\n- **Model Cards**: Updates model-index metadata for leaderboard integration\n- **Artificial Analysis**: Direct API integration for benchmark imports\n- **Papers with Code**: Compatible with their model-index specification\n- **Jobs**: Run evaluations directly on Hugging Face Jobs with `uv` integration\n\n# Version\n1.2.0\n\n# Dependencies\n- huggingface_hub>=0.26.0\n- python-dotenv>=1.2.1\n- pyyaml>=6.0.3\n- requests>=2.32.5\n- inspect-ai>=0.3.0\n- re (built-in)\n\n# Core Capabilities\n\n## 1. Extract Evaluation Tables from README\n- **Parse Markdown Tables**: Automatically detect and parse evaluation tables in model READMEs\n- **Multiple Table Support**: Handle models with multiple benchmark tables\n- **Format Detection**: Recognize common evaluation table formats (benchmarks as rows/columns, or transposed with models as rows)\n- **Smart Model Matching**: Find and extract scores for specific models in comparison tables\n- **Smart Conversion**: Convert parsed tables to model-index YAML format\n\n## 2. Import from Artificial Analysis\n- **API Integration**: Fetch benchmark scores directly from Artificial Analysis\n- **Automatic Formatting**: Convert API responses to model-index format\n- **Metadata Preservation**: Maintain source attribution and URLs\n- **PR Creation**: Automatically create pull requests with evaluation updates\n\n## 3. Model-Index Management\n- **YAML Generation**: Create properly formatted model-index entries\n- **Merge Support**: Add evaluations to existing model cards without overwriting\n- **Validation**: Ensure compliance with Papers with Code specification\n- **Batch Operations**: Process multiple models efficiently\n\n## 4. Run Evaluations on HF Jobs\n- **Inspect-AI Integration**: Run standard evaluations using the `inspect-ai` library\n- **UV Integration**: Seamlessly run Python scripts with ephemeral dependencies on HF infrastructure\n- **Zero-Config**: No Dockerfiles or Space management required\n- **Hardware Selection**: Configure CPU or GPU hardware for the evaluation job\n- **Secure Execution**: Handles API tokens safely via secrets passed through the CLI\n\n# Usage Instructions\n\nThe skill includes Python scripts in `scripts/` to perform operations.\n\n### Prerequisites\n- Install dependencies: `uv add huggingface_hub python-dotenv pyyaml inspect-ai`\n- Set `HF_TOKEN` environment variable with Write-access token\n- For Artificial Analysis: Set `AA_API_KEY` environment variable\n- Activate virtual environment: `source .venv/bin/activate`\n\n### Method 1: Extract from README\n\nExtract evaluation tables from a model's existing README and add them to model-index metadata.\n\n**Basic Usage:**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\"\n```\n\n**With Custom Task Type:**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --task-type \"text-generation\" \\\n  --dataset-name \"Custom Benchmarks\"\n```\n\n**Dry Run (Preview Only):**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --dry-run\n```\n\n#### Supported Table Formats\n\n**Format 1: Benchmarks as Rows**\n```markdown\n| Benchmark | Score |\n|-----------|-------|\n| MMLU      | 85.2  |\n| HumanEval | 72.5  |\n```\n\n**Format 2: Benchmarks as Columns**\n```markdown\n| MMLU | HumanEval | GSM8K |\n|------|-----------|-------|\n| 85.2 | 72.5      | 91.3  |\n```\n\n**Format 3: Multiple Metrics**\n```markdown\n| Benchmark | Accuracy | F1 Score |\n|-----------|----------|----------|\n| MMLU      | 85.2     | 0.84     |\n```\n\n**Format 4: Transposed Tables (Models as Rows)**\n```markdown\n| Model          | MMLU | HumanEval | GSM8K | ARC  |\n|----------------|------|-----------|-------|------|\n| GPT-4          | 86.4 | 67.0      | 92.0  | 96.3 |\n| Claude-3       | 86.8 | 84.9      | 95.0  | 96.4 |\n| **Your-Model** | 85.2 | 72.5      | 91.3  | 95.8 |\n```\n\nIn this format, the script will:\n- Detect that models are in rows (first column) and benchmarks in columns (header)\n- Find the row matching your model name (handles bold/markdown formatting)\n- Extract all benchmark scores from that specific row only\n\n#### Validating Extraction Results\n\n**CRITICAL**: Always validate extracted results before creating a PR or pushing changes.\n\nAfter running `extract-readme`, you MUST:\n\n1. **Use `--dry-run` first** to preview the extraction:\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --dry-run\n```\n\n2. **Manually verify the output**:\n   - Check that the correct model's scores were extracted (not other models)\n   - Verify benchmark names are correct\n   - Confirm all expected benchmarks are present\n   - Ensure numeric values match the README exactly\n\n3. **For transposed tables** (models as rows):\n   - Verify only ONE model's row was extracted\n   - Check that it matched the correct model name\n   - Look for warnings like \"Could not find model 'X' in transposed table\"\n   - If scores from multiple models appear, the table format was misdetected\n\n4. **Compare against the source**:\n   - Open the model README in a browser\n   - Cross-reference each extracted score with the table\n   - Verify no scores are mixed from different rows/columns\n\n5. **Common validation failures**:\n   - **Multiple models extracted**: Wrong table format detected\n   - **Missing benchmarks**: Column headers not recognized\n   - **Wrong scores**: Matched wrong model row or column\n   - **Empty metrics list**: Table not detected or parsing failed\n\n**Example validation workflow**:\n```bash\n# Step 1: Dry run to preview\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --dry-run\n\n# Step 2: If model name not found in table, script shows available models\n# \u26a0 Could not find model 'Olmo-3-1125-32B' in transposed table\n#\n# Available models in table:\n#   1. **Open-weight Models**\n#   2. Qwen-2.5-32B\n#   ...\n#   12. **Olmo 3-32B**\n#\n# Please select the correct model name from the list above.\n\n# Step 3: Re-run with the correct model name\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --model-name-override \"**Olmo 3-32B**\" \\\n  --dry-run\n\n# Step 4: Review the YAML output carefully\n# Verify: Are these all benchmarks for Olmo-3-32B ONLY?\n# Verify: Do the scores match the README table?\n\n# Step 5: If validation passes, create PR\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"allenai/Olmo-3-1125-32B\" \\\n  --model-name-override \"**Olmo 3-32B**\" \\\n  --create-pr\n\n# Step 6: Validate the model card after update\npython scripts/evaluation_manager.py show \\\n  --repo-id \"allenai/Olmo-3-1125-32B\"\n```\n\n### Method 2: Import from Artificial Analysis\n\nFetch benchmark scores from Artificial Analysis API and add them to a model card.\n\n**Basic Usage:**\n```bash\nAA_API_KEY=\"your-api-key\" python scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\"\n```\n\n**With Environment File:**\n```bash\n# Create .env file\necho \"AA_API_KEY=your-api-key\" >> .env\necho \"HF_TOKEN=your-hf-token\" >> .env\n\n# Run import\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\"\n```\n\n**Create Pull Request:**\n```bash\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"username/model-name\" \\\n  --create-pr\n```\n\n### Method 3: Run Evaluation Job\n\nSubmit an evaluation job on Hugging Face infrastructure using the `hf jobs uv run` CLI.\n\n**Direct CLI Usage:**\n```bash\nHF_TOKEN=$HF_TOKEN \\\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor cpu-basic \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"meta-llama/Llama-2-7b-hf\" \\\n     --task \"mmlu\"\n```\n\n**GPU Example (A10G):**\n```bash\nHF_TOKEN=$HF_TOKEN \\\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor a10g-small \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"meta-llama/Llama-2-7b-hf\" \\\n     --task \"gsm8k\"\n```\n\n**Python Helper (optional):**\n```bash\npython scripts/run_eval_job.py \\\n  --model \"meta-llama/Llama-2-7b-hf\" \\\n  --task \"mmlu\" \\\n  --hardware \"t4-small\"\n```\n\n### Commands Reference\n\n**List Available Commands:**\n```bash\npython scripts/evaluation_manager.py --help\n```\n\n**Extract from README:**\n```bash\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  [--task-type \"text-generation\"] \\\n  [--dataset-name \"Custom Benchmarks\"] \\\n  [--model-name-override \"Model Name From Table\"] \\\n  [--dry-run] \\\n  [--create-pr]\n```\n\nThe `--model-name-override` flag is useful when:\n- The model name in the table differs from the repo name\n- Working with transposed tables where models are listed with different formatting\n- The script cannot automatically match the model name\n\n**Import from Artificial Analysis:**\n```bash\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"creator-name\" \\\n  --model-name \"model-slug\" \\\n  --repo-id \"username/model-name\" \\\n  [--create-pr]\n```\n\n**View Current Evaluations:**\n```bash\npython scripts/evaluation_manager.py show \\\n  --repo-id \"username/model-name\"\n```\n\n**Validate Model-Index:**\n```bash\npython scripts/evaluation_manager.py validate \\\n  --repo-id \"username/model-name\"\n```\n\n**Run Evaluation Job:**\n```bash\nhf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py \\\n  --flavor \"cpu-basic|t4-small|...\" \\\n  --secret HF_TOKEN=$HF_TOKEN \\\n  -- --model \"model-id\" \\\n     --task \"task-name\"\n```\n\nor use the Python helper:\n\n```bash\npython scripts/run_eval_job.py \\\n  --model \"model-id\" \\\n  --task \"task-name\" \\\n  --hardware \"cpu-basic|t4-small|...\"\n```\n\n### Model-Index Format\n\nThe generated model-index follows this structure:\n\n```yaml\nmodel-index:\n  - name: Model Name\n    results:\n      - task:\n          type: text-generation\n        dataset:\n          name: Benchmark Dataset\n          type: benchmark_type\n        metrics:\n          - name: MMLU\n            type: mmlu\n            value: 85.2\n          - name: HumanEval\n            type: humaneval\n            value: 72.5\n        source:\n          name: Source Name\n          url: https://source-url.com\n```\n\nWARNING: Do not use markdown formatting in the model name. Use the exact name from the table. Only use urls in the source.url field.\n\n### Advanced Usage\n\n**Extract Multiple Tables:**\n```bash\n# The script automatically detects and processes all evaluation tables\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --merge-tables\n```\n\n**Custom Metric Mapping:**\n```bash\n# Use a JSON file to map column names to metric types\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"username/model-name\" \\\n  --metric-mapping \"$(cat metric_mapping.json)\"\n```\n\nExample `metric_mapping.json`:\n```json\n{\n  \"MMLU\": {\"type\": \"mmlu\", \"name\": \"Massive Multitask Language Understanding\"},\n  \"HumanEval\": {\"type\": \"humaneval\", \"name\": \"Code Generation (HumanEval)\"},\n  \"GSM8K\": {\"type\": \"gsm8k\", \"name\": \"Grade School Math\"}\n}\n```\n\n**Batch Processing:**\n```bash\n# Process multiple models from a list\nwhile read repo_id; do\n  python scripts/evaluation_manager.py extract-readme --repo-id \"$repo_id\"\ndone < models.txt\n```\n\n### Error Handling\n- **Table Not Found**: Script will report if no evaluation tables are detected\n- **Invalid Format**: Clear error messages for malformed tables\n- **API Errors**: Retry logic for transient Artificial Analysis API failures\n- **Token Issues**: Validation before attempting updates\n- **Merge Conflicts**: Preserves existing model-index entries when adding new ones\n- **Space Creation**: Handles naming conflicts and hardware request failures gracefully\n\n### Best Practices\n\n1. **ALWAYS Validate Extraction**: Use `--dry-run` first and manually verify all extracted scores match the README exactly before pushing\n2. **Check for Transposed Tables**: If the README has comparison tables with multiple models, verify only YOUR model's scores were extracted\n3. **Validate After Updates**: Run `validate` and `show` commands to ensure proper formatting\n4. **Source Attribution**: Include source information for traceability\n5. **Regular Updates**: Keep evaluation scores current as new benchmarks emerge\n6. **Create PRs for Others**: Use `--create-pr` when updating models you don't own\n7. **Monitor Costs**: Evaluation Jobs are billed by usage. Ensure you check running jobs and costs\n8. **One model per repo**: Only add one model's 'results' to the model-index. The main model of the repo. No derivatives or forks!\n9. **Markdown formatting**: Never use markdown formatting in the model name. Use the exact name from the table. Only use urls in the source.url field.\n\n### Model Name Matching\n\nWhen extracting evaluation tables with multiple models (either as columns or rows), the script uses **exact normalized token matching**:\n\n- Removes markdown formatting (bold `**`, links `[]()`  )\n- Normalizes names (lowercase, replace `-` and `_` with spaces)\n- Compares token sets: `\"OLMo-3-32B\"` \u2192 `{\"olmo\", \"3\", \"32b\"}` matches `\"**Olmo 3 32B**\"` or `\"[Olmo-3-32B](...)`\n- Only extracts if tokens match exactly (handles different word orders and separators)\n- Fails if no exact match found (rather than guessing from similar names)\n\n**For column-based tables** (benchmarks as rows, models as columns):\n- Finds the column header matching the model name\n- Extracts scores from that column only\n\n**For transposed tables** (models as rows, benchmarks as columns):\n- Finds the row in the first column matching the model name\n- Extracts all benchmark scores from that row only\n\nThis ensures only the correct model's scores are extracted, never unrelated models or training checkpoints. \n\n### Common Patterns\n\n**Update Your Own Model:**\n```bash\n# Extract from README and push directly\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"your-username/your-model\" \\\n  --task-type \"text-generation\"\n```\n\n**Update Someone Else's Model:**\n```bash\n# Create a PR instead of direct push\npython scripts/evaluation_manager.py extract-readme \\\n  --repo-id \"other-username/their-model\" \\\n  --create-pr\n```\n\n**Import Fresh Benchmarks:**\n```bash\n# Get latest scores from Artificial Analysis\npython scripts/evaluation_manager.py import-aa \\\n  --creator-slug \"anthropic\" \\\n  --model-name \"claude-sonnet-4\" \\\n  --repo-id \"anthropic/claude-sonnet-4\" \\\n  --create-pr\n```\n\n### Troubleshooting\n\n**Issue**: \"No evaluation tables found in README\"\n- **Solution**: Check if README contains markdown tables with numeric scores\n\n**Issue**: \"Could not find model 'X' in transposed table\"\n- **Solution**: The script will display available models. Use `--model-name-override` with the exact name from the list\n- **Example**: `--model-name-override \"**Olmo 3-32B**\"`\n\n**Issue**: \"AA_API_KEY not set\"\n- **Solution**: Set environment variable or add to .env file\n\n**Issue**: \"Token does not have write access\"\n- **Solution**: Ensure HF_TOKEN has write permissions for the repository\n\n**Issue**: \"Model not found in Artificial Analysis\"\n- **Solution**: Verify creator-slug and model-name match API values\n\n**Issue**: \"Payment required for hardware\"\n- **Solution**: Add a payment method to your Hugging Face account to use non-CPU hardware\n\n### Integration Examples\n\n**Python Script Integration:**\n```python\nimport subprocess\nimport os\n\ndef update_model_evaluations(repo_id, readme_content):\n    \"\"\"Update model card with evaluations from README.\"\"\"\n    result = subprocess.run([\n        \"python\", \"scripts/evaluation_manager.py\",\n        \"extract-readme\",\n        \"--repo-id\", repo_id,\n        \"--create-pr\"\n    ], capture_output=True, text=True)\n\n    if result.returncode == 0:\n        print(f\"Successfully updated {repo_id}\")\n    else:\n        print(f\"Error: {result.stderr}\")\n```\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_2C7RbJ8p9qHZazf3RokL4J4V\": {\"timing_ms\": 68.32, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_2sL3qAIq1M6j959hbhjXqOUS": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && ls"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188163.532541198, \"end_time\": 1188164.564423568, \"duration_ms\": 1031.88}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_2sL3qAIq1M6j959hbhjXqOUS": {
+          "content": [
+            {
+              "type": "text",
+              "text": "AGENTS.md\nEXTRACTION_SUMMARY.md\nREADME_EVAL_TEST.md\n__pycache__\nagent.py\nbuild_olmo_yaml.md\ndev\nfast_agent_app.egg-info\nfastagent.config.yaml\nolmo_readme.md\nolmo_readme_full.md\nolmo_readme_full.txt\npyproject.toml\nraw_readme.md\nreadme_content.txt\nreadme_full.md\nruns\ntest_eval_assertions.py\nuv.lock\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_2sL3qAIq1M6j959hbhjXqOUS\": {\"timing_ms\": 7.42, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_p3x6y0pRI8nL1QpzR5XL2Q9d": {
+          "method": "tools/call",
+          "params": {
+            "name": "huggingface__hub_repo_details",
+            "arguments": {
+              "repo_ids": [
+                "allenai/OLMo-7B"
+              ],
+              "include_readme": true
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188164.581147712, \"end_time\": 1188165.794270337, \"duration_ms\": 1213.12}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_p3x6y0pRI8nL1QpzR5XL2Q9d": {
+          "content": [
+            {
+              "type": "text",
+              "text": "**Type: Model**\n\n# allenai/OLMo-7B\n\n## Overview\n- **Author:** allenai\n- **Task:** text-generation\n- **Library:** transformers\n- **Downloads:** 283.8K | **Likes:** 648\n- **Updated:** 9 Oct, 2025\n\n## Technical Details\n- **Model Class:** AutoModelForCausalLM\n- **Parameters:** 6888.1M\n- **Architecture:** hf_olmo\n\n## Tags\n`transformers` `pytorch` `safetensors` `hf_olmo` `text-generation` `custom_code` `en` `dataset:allenai/dolma` `arxiv:2402.00838` `arxiv:2302.13971` `license:apache-2.0` `autotrain_compatible` `region:us`\n\n## Metadata\n- **Language:** en\n- **License:** apache-2.0\n- **Datasets:** allenai/dolma\n\n## Demo Spaces\n- [open_pt_llm_leaderboard](https://hf.co/spaces/eduagarcia/open_pt_llm_leaderboard)\n- [URIAL-Bench](https://hf.co/spaces/allenai/URIAL-Bench)\n- [BaseChat](https://hf.co/spaces/allenai/BaseChat)\n- [Data-Contamination-Database](https://hf.co/spaces/CONDA-Workshop/Data-Contamination-Database)\n- [BiGGen-Bench-Leaderboard](https://hf.co/spaces/prometheus-eval/BiGGen-Bench-Leaderboard)\n- [dutch-tokenizer-arena](https://hf.co/spaces/yhavinga/dutch-tokenizer-arena)\n- [Olmo](https://hf.co/spaces/Tonic/Olmo)\n- [AI_safety_testing](https://hf.co/spaces/Xhaheen/AI_safety_testing)\n- [phoeniks_redteamers](https://hf.co/spaces/Xhaheen/phoeniks_redteamers)\n- [olmo-model](https://hf.co/spaces/Guxtavv/olmo-model)\n\n**Link:** [https://hf.co/allenai/OLMo-7B](https://hf.co/allenai/OLMo-7B)\n\n## README\n<modelcard-readme>\n\n[![mof-class1-qualified](https://mot.isitopen.ai/modules/mof/assets/badge_class1_qualified.png)](https://mot.isitopen.ai/model/1035)\n\n\n<img src=\"https://allenai.org/olmo/olmo-7b-animation.gif\" alt=\"OLMo Logo\" width=\"800\" style=\"margin-left:'auto' margin-right:'auto' display:'block'\"/>\n\n\n# Model Card for OLMo 7B\n\n<!-- Provide a quick summary of what the model is/does. -->\n\n**For transformers versions v4.40.0 or newer, we suggest using [OLMo 7B HF](https://huggingface.co/allenai/OLMo-7B-hf) instead.**\n\nOLMo is a series of **O**pen **L**anguage **Mo**dels designed to enable the science of language models.\nThe OLMo models are trained on the [Dolma](https://huggingface.co/datasets/allenai/dolma) dataset.\nWe release all code, checkpoints, logs (coming soon), and details involved in training these models.\n\n*A new version of this model with a 24 point improvement on MMLU is available [here](https://huggingface.co/allenai/OLMo-1.7-7B)*.\n\n## Model Details\n\nThe core models released in this batch are the following: \n| Size | Training Tokens | Layers | Hidden Size | Attention Heads | Context Length |\n|------|--------|---------|-------------|-----------------|----------------|\n| [OLMo 1B](https://huggingface.co/allenai/OLMo-1B)   | 3 Trillion |16     | 2048        | 16              | 2048  |\n| [OLMo 7B](https://huggingface.co/allenai/OLMo-7B) | 2.5 Trillion   | 32     | 4096        | 32              |  2048  |\n| [OLMo 7B Twin 2T](https://huggingface.co/allenai/OLMo-7B-Twin-2T) | 2 Trillion   | 32     | 4096        | 32              |  2048  |\n\nWe are releasing many checkpoints for these models, for every 1000 traing steps.\nThe naming convention is `step1000-tokens4B`.\nIn particular, we focus on four revisions of the 7B models:\n\n| Name | HF Repo | Model Revision |  Tokens | Note |\n|------------|---------|----------------|-------------------|------|\n|OLMo 7B| [allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)|`main`| 2.5T|The base OLMo 7B model|\n|OLMo 7B (not annealed)|[allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)|step556000-tokens2460B|2.5T| learning rate not annealed to 0|\n|OLMo 7B-2T|[allenai/OLMo-7B](https://huggingface.co/allenai/OLMo-7B)| step452000-tokens2000B |2T| OLMo checkpoint at 2T tokens|\n|OLMo-7B-Twin-2T|[allenai/OLMo-7B-Twin-2T](https://huggingface.co/allenai/OLMo-7B-Twin-2T)|`main`|2T| Twin version on different hardware|\n\nTo load a specific model revision with HuggingFace, simply add the argument `revision`:\n```bash\nfrom hf_olmo import OLMoForCausalLM  # pip install ai2-olmo\n\nolmo = OLMoForCausalLM.from_pretrained(\"allenai/OLMo-7B\", revision=\"step1000-tokens4B\")\n```\n\nAll revisions/branches are listed in the file `revisions.txt`. \nOr, you can access all the revisions for the models via the following code snippet:\n```python\nfrom huggingface_hub import list_repo_refs\nout = list_repo_refs(\"allenai/OLMo-7B\")\nbranches = [b.name for b in out.branches]\n```\nA few revisions were lost due to an error, but the vast majority are present.\n\n### Model Description\n\n<!-- Provide a longer summary of what this model is. -->\n\n- **Developed by:** Allen Institute for AI (AI2)\n- **Supported by:** Databricks, Kempner Institute for the Study of Natural and Artificial Intelligence at Harvard University, AMD, CSC (Lumi Supercomputer), UW\n- **Model type:** a Transformer style autoregressive language model.\n- **Language(s) (NLP):** English\n- **License:** The code and model are released under Apache 2.0.\n- **Contact:** Technical inquiries: `olmo at allenai dot org`. Press: `press at allenai dot org`\n- **Date cutoff:** Feb./March 2023 based on Dolma dataset version.\n\n\n### Model Sources\n\n<!-- Provide the basic links for the model. -->\n\n- **Project Page:** https://allenai.org/olmo\n- **Repositories:** \n    - Core repo (training, inference, fine-tuning etc.): https://github.com/allenai/OLMo\n    - Evaluation code: https://github.com/allenai/OLMo-Eval\n    - Further fine-tuning code: https://github.com/allenai/open-instruct\n- **Paper:** [Link](https://arxiv.org/abs/2402.00838)\n- **Technical blog post:** https://blog.allenai.org/olmo-open-language-model-87ccfc95f580\n- **W&B Logs:** https://wandb.ai/ai2-llm/OLMo-7B/reports/OLMo-7B--Vmlldzo2NzQyMzk5\n<!-- - **Press release:** TODO -->\n\n## Uses\n\n<!-- Address questions around how the model is intended to be used, including the foreseeable users of the model and those affected by the model. -->\n\n### Inference\nQuickly get inference running with the following required installation:\n```bash\npip install ai2-olmo\n```\nNow, proceed as usual with HuggingFace:\n```python\nfrom hf_olmo import OLMoForCausalLM, OLMoTokenizerFast\n\nolmo = OLMoForCausalLM.from_pretrained(\"allenai/OLMo-7B\")\ntokenizer = OLMoTokenizerFast.from_pretrained(\"allenai/OLMo-7B\")\nmessage = [\"Language modeling is\"]\ninputs = tokenizer(message, return_tensors='pt', return_token_type_ids=False)\n# optional verifying cuda\n# inputs = {k: v.to('cuda') for k,v in inputs.items()}\n# olmo = olmo.to('cuda')\nresponse = olmo.generate(**inputs, max_new_tokens=100, do_sample=True, top_k=50, top_p=0.95)\nprint(tokenizer.batch_decode(response, skip_special_tokens=True)[0])\n>> 'Language modeling is the first step to build natural language generation...'\n```\n\nYou can make this slightly faster by quantizing the model, e.g. `AutoModelForCausalLM.from_pretrained(\"allenai/OLMo-7B\", torch_dtype=torch.float16, load_in_8bit=True)` (requires `bitsandbytes`).\nThe quantized model is more sensitive to typing / cuda, so it is recommended to pass the inputs as `inputs.input_ids.to('cuda')` to avoid potential issues.\n\nNote, you may see the following error if `ai2-olmo` is not installed correctly, which is caused by internal Python check naming. We'll update the code soon to make this error clearer.\n```bash\n    raise ImportError(\nImportError: This modeling file requires the following packages that were not found in your environment: hf_olmo. Run `pip install hf_olmo`\n```\n\n### Fine-tuning\nModel fine-tuning can be done from the final checkpoint (the `main` revision of this model) or many intermediate checkpoints. Two recipes for tuning are available.\n1. Fine-tune with the OLMo repository:\n```bash\ntorchrun --nproc_per_node=8 scripts/train.py {path_to_train_config} \\\n    --data.paths=[{path_to_data}/input_ids.npy] \\\n    --data.label_mask_paths=[{path_to_data}/label_mask.npy] \\\n    --load_path={path_to_checkpoint} \\\n    --reset_trainer_state\n```\nFor more documentation, see the [GitHub readme](https://github.com/allenai/OLMo?tab=readme-ov-file#fine-tuning).\n\n2. Further fine-tuning support is being developing in AI2's Open Instruct repository. Details are [here](https://github.com/allenai/open-instruct).\n\n## Evaluation\n\n<!-- This section describes the evaluation protocols and provides the results. -->\n\nCore model results for the 7B model are found below.\n\n|                                   | [Llama 7B](https://arxiv.org/abs/2302.13971) | [Llama 2 7B](https://huggingface.co/meta-llama/Llama-2-7b) | [Falcon 7B](https://huggingface.co/tiiuae/falcon-7b) | [MPT 7B](https://huggingface.co/mosaicml/mpt-7b) | **OLMo 7B** (ours) |\n| --------------------------------- | -------- | ---------- | --------- | ------ | ------- |\n| arc_challenge       | 44.5             | 39.8             | 47.5         | 46.5         | 48.5            |\n| arc_easy            | 57.0             | 57.7             | 70.4         | 70.5         | 65.4            |\n| boolq               | 73.1             | 73.5             | 74.6         | 74.2         | 73.4            |\n| copa                | 85.0             | 87.0             | 86.0         | 85.0         | 90              |\n| hellaswag           | 74.5             | 74.5             | 75.9         | 77.6         | 76.4            |\n| openbookqa          | 49.8             | 48.4             | 53.0         | 48.6         | 50.2            |\n| piqa                | 76.3             | 76.4             | 78.5         | 77.3         | 78.4            |\n| sciq                | 89.5             | 90.8             | 93.9         | 93.7         | 93.8            |\n| winogrande          | 68.2             | 67.3             | 68.9         | 69.9         | 67.9            |\n| **Core tasks average**  | 68.7             | 68.4             | 72.1         | 71.5         | 71.6            |\n| truthfulQA (MC2)    | 33.9             | 38.5             | 34.0         | 33           | 36.0            |\n| MMLU (5 shot MC)    | 31.5             | 45.0             | 24.0         | 30.8         | 28.3            |\n| GSM8k (mixed eval.) | 10.0 (8shot CoT) | 12.0 (8shot CoT) | 4.0 (5 shot) | 4.5 (5 shot) | 8.5 (8shot CoT) |\n| **Full average**        | 57.8             | 59.3             | 59.2         | 59.3         | 59.8            |\n\nAnd for the 1B model:\n\n| task       | random | [StableLM 2 1.6b](https://huggingface.co/stabilityai/stablelm-2-1_6b)\\* | [Pythia 1B](https://huggingface.co/EleutherAI/pythia-1b) | [TinyLlama 1.1B](https://huggingface.co/TinyLlama/TinyLlama-1.1B-intermediate-step-1195k-token-2.5T) | **OLMo 1B** (ours) |\n| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ----------------- | --------- | -------------------------------------- | ------- |\n| arc_challenge | 25     | 43.81             | 33.11     | 34.78                                  | 34.45   |\n| arc_easy      | 25     | 63.68             | 50.18     | 53.16                                  | 58.07   |\n| boolq         | 50     | 76.6              | 61.8      | 64.6                                   | 60.7    |\n| copa          | 50     | 84                | 72        | 78                                     | 79      |\n| hellaswag     | 25     | 68.2              | 44.7      | 58.7                                   | 62.5    |\n| openbookqa    | 25     | 45.8              | 37.8      | 43.6                                   | 46.4    |\n| piqa          | 50     | 74                \n\n[... truncated to ~10000 characters \u2014 full README: https://huggingface.co/allenai/OLMo-7B]\n</modelcard-readme>"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_p3x6y0pRI8nL1QpzR5XL2Q9d\": {\"timing_ms\": 288.45, \"transport_channel\": \"post-json\"}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_8CXw8PhyehT6ZrAJAebMjat0": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && ls ../skills"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188166.09793697, \"end_time\": 1188167.516834065, \"duration_ms\": 1418.9}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_8CXw8PhyehT6ZrAJAebMjat0": {
+          "content": [
+            {
+              "type": "text",
+              "text": "AGENTS.md\nLICENSE\nREADME.md\napps\nassets\ngemini-extension.json\nhf-llm-trainer\nhf-paper-publisher\nhf_dataset_creator\nhf_model_evaluation\npyproject.toml\nscripts\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_8CXw8PhyehT6ZrAJAebMjat0\": {\"timing_ms\": 6.76, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_krof2h8EouW4RWw1dKVoqGG0": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && ls ../skills/hf_model_evaluation"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188167.533162232, \"end_time\": 1188168.648076859, \"duration_ms\": 1114.91}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_krof2h8EouW4RWw1dKVoqGG0": {
+          "content": [
+            {
+              "type": "text",
+              "text": "SKILL.md\nexamples\nrequirements.txt\nscripts\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_krof2h8EouW4RWw1dKVoqGG0\": {\"timing_ms\": 6.33, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_wMU6iFpaPEaIOdMBxWS3X5pp": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && python ../skills/hf_model_evaluation/scripts/evaluation_manager.py extract-readme --repo-id allenai/OLMo-7B --dry-run"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188168.66452691, \"end_time\": 1188169.723313823, \"duration_ms\": 1058.79}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_wMU6iFpaPEaIOdMBxWS3X5pp": {
+          "content": [
+            {
+              "type": "text",
+              "text": "\nPreview of extracted evaluations:\nmodel-index:\n- name: OLMo-7B\n  results:\n  - task:\n      type: text-generation\n    dataset:\n      name: Benchmarks\n      type: benchmark\n    metrics:\n    - name: '[OLMo 1B](https://huggingface.co/allenai/OLMo-1B) (Layers)'\n      type: '[olmo_1b](https://huggingface.co/allenai/olmo-1b)'\n      value: 16.0\n    - name: '[OLMo 7B](https://huggingface.co/allenai/OLMo-7B) (Layers)'\n      type: '[olmo_7b](https://huggingface.co/allenai/olmo-7b)'\n      value: 32.0\n    - name: '[OLMo 7B Twin 2T](https://huggingface.co/allenai/OLMo-7B-Twin-2T) (Layers)'\n      type: '[olmo_7b_twin_2t](https://huggingface.co/allenai/olmo-7b-twin-2t)'\n      value: 32.0\n    - name: arc_challenge ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: arc_challenge\n      value: 44.5\n    - name: arc_easy ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: arc_easy\n      value: 57.0\n    - name: boolq ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: boolq\n      value: 73.1\n    - name: copa ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: copa\n      value: 85.0\n    - name: hellaswag ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: hellaswag\n      value: 74.5\n    - name: openbookqa ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: openbookqa\n      value: 49.8\n    - name: piqa ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: piqa\n      value: 76.3\n    - name: sciq ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: sciq\n      value: 89.5\n    - name: winogrande ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: winogrande\n      value: 68.2\n    - name: '**Core tasks average** ([Llama 7B](https://arxiv.org/abs/2302.13971))'\n      type: '**core_tasks_average**'\n      value: 68.7\n    - name: truthfulQA (MC2) ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: truthfulqa_(mc2)\n      value: 33.9\n    - name: MMLU (5 shot MC) ([Llama 7B](https://arxiv.org/abs/2302.13971))\n      type: mmlu_(5_shot_mc)\n      value: 31.5\n    - name: '**Full average** ([Llama 7B](https://arxiv.org/abs/2302.13971))'\n      type: '**full_average**'\n      value: 57.8\n    - name: arc_challenge (random)\n      type: arc_challenge\n      value: 25.0\n    - name: arc_easy (random)\n      type: arc_easy\n      value: 25.0\n    - name: boolq (random)\n      type: boolq\n      value: 50.0\n    - name: copa (random)\n      type: copa\n      value: 50.0\n    - name: hellaswag (random)\n      type: hellaswag\n      value: 25.0\n    - name: openbookqa (random)\n      type: openbookqa\n      value: 25.0\n    - name: piqa (random)\n      type: piqa\n      value: 50.0\n    - name: sciq (random)\n      type: sciq\n      value: 25.0\n    - name: winogrande (random)\n      type: winogrande\n      value: 50.0\n    - name: Average (random)\n      type: average\n      value: 36.11\n    - name: d_model\n      type: d_model\n      value: 4096.0\n    - name: num heads\n      type: num_heads\n      value: 32.0\n    - name: num layers\n      type: num_layers\n      value: 32.0\n    - name: sequence length\n      type: sequence_length\n      value: 2048.0\n    - name: batch size (instances)\n      type: batch_size_(instances)\n      value: 2160.0\n    - name: 1B (Peak LR)\n      type: 1b\n      value: 0.0004\n    - name: 7B (Peak LR)\n      type: 7b\n      value: 0.0003\n    - name: warmup steps\n      type: warmup_steps\n      value: 5000.0\n    - name: peak LR\n      type: peak_lr\n      value: 0.0003\n    - name: minimum LR\n      type: minimum_lr\n      value: 3.0e-05\n    - name: weight decay\n      type: weight_decay\n      value: 0.1\n    - name: beta1\n      type: beta1\n      value: 0.9\n    - name: beta2\n      type: beta2\n      value: 0.95\n    - name: epsilon\n      type: epsilon\n      value: 1.0e-05\n    - name: \"OLMo 7B (Carbon Intensity (kg CO\\u2082e/KWh))\"\n      type: olmo_7b\n      value: 0.656\n    source:\n      name: Model README\n      url: https://huggingface.co/allenai/OLMo-7B\n\nprocess exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_wMU6iFpaPEaIOdMBxWS3X5pp\": {\"timing_ms\": 458.0, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [],
+      "tool_calls": {
+        "call_qzwAz8KngMdG0fH50WMv53wz": {
+          "method": "tools/call",
+          "params": {
+            "name": "execute",
+            "arguments": {
+              "command": "cd /home/ssmith/source/skills-test && cat << 'EOF' > olmo_7b_evaluations.yaml\nmodel-index:\n  - name: OLMo-7B\n    results:\n      - task:\n          type: text-generation\n        dataset:\n          name: Benchmarks\n          type: benchmark\n        metrics:\n          - name: arc_challenge\n            type: arc_challenge\n            value: 48.5\n          - name: arc_easy\n            type: arc_easy\n            value: 65.4\n          - name: boolq\n            type: boolq\n            value: 73.4\n          - name: copa\n            type: copa\n            value: 90.0\n          - name: hellaswag\n            type: hellaswag\n            value: 76.4\n          - name: openbookqa\n            type: openbookqa\n            value: 50.2\n          - name: piqa\n            type: piqa\n            value: 78.4\n          - name: sciq\n            type: sciq\n            value: 93.8\n          - name: winogrande\n            type: winogrande\n            value: 67.9\n          - name: MMLU (5 shot MC)\n            type: mmlu\n            value: 28.3\n          - name: truthfulQA (MC2)\n            type: truthfulqa\n            value: 36.0\n        source:\n          name: Model README\n          url: https://huggingface.co/allenai/OLMo-7B\nEOF"
+            }
+          }
+        }
+      },
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188170.191065373, \"end_time\": 1188175.892260184, \"duration_ms\": 5701.19}"
+          }
+        ]
+      },
+      "stop_reason": "toolUse",
+      "is_template": false
+    },
+    {
+      "role": "user",
+      "content": [],
+      "tool_results": {
+        "call_qzwAz8KngMdG0fH50WMv53wz": {
+          "content": [
+            {
+              "type": "text",
+              "text": "process exit code was 0"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "channels": {
+        "fast-agent-tool-timing": [
+          {
+            "type": "text",
+            "text": "{\"call_qzwAz8KngMdG0fH50WMv53wz\": {\"timing_ms\": 6.25, \"transport_channel\": null}}"
+          }
+        ],
+        "mcp-ui": []
+      },
+      "is_template": false
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "I\u2019ve created `olmo_7b_evaluations.yaml` in the current directory with the requested filtered benchmarks in valid `model-index` YAML format.\n\nFor reference, the file content is:\n\n```yaml\nmodel-index:\n  - name: OLMo-7B\n    results:\n      - task:\n          type: text-generation\n        dataset:\n          name: Benchmarks\n          type: benchmark\n        metrics:\n          - name: arc_challenge\n            type: arc_challenge\n            value: 48.5\n          - name: arc_easy\n            type: arc_easy\n            value: 65.4\n          - name: boolq\n            type: boolq\n            value: 73.4\n          - name: copa\n            type: copa\n            value: 90.0\n          - name: hellaswag\n            type: hellaswag\n            value: 76.4\n          - name: openbookqa\n            type: openbookqa\n            value: 50.2\n          - name: piqa\n            type: piqa\n            value: 78.4\n          - name: sciq\n            type: sciq\n            value: 93.8\n          - name: winogrande\n            type: winogrande\n            value: 67.9\n          - name: MMLU (5 shot MC)\n            type: mmlu\n            value: 28.3\n          - name: truthfulQA (MC2)\n            type: truthfulqa\n            value: 36.0\n        source:\n          name: Model README\n          url: https://huggingface.co/allenai/OLMo-7B\n```\n\nThis YAML:\n- Uses the evaluation data from the `**OLMo 7B (ours)**` column in the README table.\n- Includes only the specified benchmarks.\n- Omits training hyperparameters, architecture specs, and random baselines.\n- Attributes the source to the model README."
+        }
+      ],
+      "channels": {
+        "fast-agent-timing": [
+          {
+            "type": "text",
+            "text": "{\"start_time\": 1188175.909283861, \"end_time\": 1188180.187595979, \"duration_ms\": 4278.31}"
+          }
+        ]
+      },
+      "stop_reason": "endTurn",
+      "is_template": false
+    }
+  ]
+}

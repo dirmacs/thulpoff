@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "model": "gpt-oss",
+    "task": "\"Provides guidance for writing optimized CUDA kernels for H100 GPUs (sm_90) targeting diffusers library models like LTX-Video, Stable Diffusion, and DiT. Applies when working with attention, normalization, RoPE, activations, or custom kernel development for diffusion transformers.\"",
+    "batch_id": "2026_01_27_14_40",
+    "run_number": 1,
+    "timestamp": "2026-01-27T14:41:23.425521"
+  },
+  "stats": {
+    "conversation_span_ms": 23447.2,
+    "llm_time_ms": 23447.2,
+    "tool_time_ms": 0.0,
+    "turns": 5,
+    "tool_calls": 0,
+    "tool_errors": 0,
+    "mcp_calls": 0,
+    "execute_calls": 0,
+    "tool_call_map": {},
+    "tool_error_map": {},
+    "input_tokens": 1129,
+    "output_tokens": 28775,
+    "total_tokens": 29904,
+    "usage_summaries": [
+      {
+        "model": "openai/gpt-oss-120b:cerebras",
+        "turn_count": 1,
+        "cumulative_input_tokens": 226,
+        "cumulative_output_tokens": 4064,
+        "cumulative_billing_tokens": 4290,
+        "cumulative_tool_use_tokens": 0,
+        "cumulative_reasoning_tokens": 0,
+        "cumulative_tool_calls": 0,
+        "current_context_tokens": 4290,
+        "context_window_size": null,
+        "context_usage_percentage": null,
+        "cumulative_cache_read_tokens": 0,
+        "cumulative_cache_write_tokens": 0,
+        "cumulative_cache_hit_tokens": 128,
+        "cache_hit_rate_percent": 36.15819209039548,
+        "cumulative_effective_input_tokens": 98
+      },
+      {
+        "model": "openai/gpt-oss-120b:cerebras",
+        "turn_count": 1,
+        "cumulative_input_tokens": 221,
+        "cumulative_output_tokens": 7978,
+        "cumulative_billing_tokens": 8199,
+        "cumulative_tool_use_tokens": 0,
+        "cumulative_reasoning_tokens": 0,
+        "cumulative_tool_calls": 0,
+        "current_context_tokens": 8199,
+        "context_window_size": null,
+        "context_usage_percentage": null,
+        "cumulative_cache_read_tokens": 0,
+        "cumulative_cache_write_tokens": 0,
+        "cumulative_cache_hit_tokens": 128,
+        "cache_hit_rate_percent": 36.67621776504298,
+        "cumulative_effective_input_tokens": 93
+      },
+      {
+        "model": "openai/gpt-oss-120b:cerebras",
+        "turn_count": 1,
+        "cumulative_input_tokens": 231,
+        "cumulative_output_tokens": 5631,
+        "cumulative_billing_tokens": 5862,
+        "cumulative_tool_use_tokens": 0,
+        "cumulative_reasoning_tokens": 0,
+        "cumulative_tool_calls": 0,
+        "current_context_tokens": 5862,
+        "context_window_size": null,
+        "context_usage_percentage": null,
+        "cumulative_cache_read_tokens": 0,
+        "cumulative_cache_write_tokens": 0,
+        "cumulative_cache_hit_tokens": 128,
+        "cache_hit_rate_percent": 35.65459610027855,
+        "cumulative_effective_input_tokens": 103
+      },
+      {
+        "model": "openai/gpt-oss-120b:cerebras",
+        "turn_count": 1,
+        "cumulative_input_tokens": 226,
+        "cumulative_output_tokens": 4399,
+        "cumulative_billing_tokens": 4625,
+        "cumulative_tool_use_tokens": 0,
+        "cumulative_reasoning_tokens": 0,
+        "cumulative_tool_calls": 0,
+        "current_context_tokens": 4625,
+        "context_window_size": null,
+        "context_usage_percentage": null,
+        "cumulative_cache_read_tokens": 0,
+        "cumulative_cache_write_tokens": 0,
+        "cumulative_cache_hit_tokens": 0,
+        "cache_hit_rate_percent": 0.0,
+        "cumulative_effective_input_tokens": 226
+      },
+      {
+        "model": "openai/gpt-oss-120b:cerebras",
+        "turn_count": 1,
+        "cumulative_input_tokens": 225,
+        "cumulative_output_tokens": 6703,
+        "cumulative_billing_tokens": 6928,
+        "cumulative_tool_use_tokens": 0,
+        "cumulative_reasoning_tokens": 0,
+        "cumulative_tool_calls": 0,
+        "current_context_tokens": 6928,
+        "context_window_size": null,
+        "context_usage_percentage": null,
+        "cumulative_cache_read_tokens": 0,
+        "cumulative_cache_write_tokens": 0,
+        "cumulative_cache_hit_tokens": 128,
+        "cache_hit_rate_percent": 36.26062322946176,
+        "cumulative_effective_input_tokens": 97
+      }
+    ],
+    "timing_summaries": [
+      {
+        "start_time": 313580.950588875,
+        "end_time": 313584.733178083,
+        "duration_ms": 3782.59
+      },
+      {
+        "start_time": 313580.960432166,
+        "end_time": 313587.818569041,
+        "duration_ms": 6858.14
+      },
+      {
+        "start_time": 313580.967003541,
+        "end_time": 313585.057804125,
+        "duration_ms": 4090.8
+      },
+      {
+        "start_time": 313580.972938,
+        "end_time": 313584.678591,
+        "duration_ms": 3705.65
+      },
+      {
+        "start_time": 313580.9786405,
+        "end_time": 313585.988664666,
+        "duration_ms": 5010.02
+      }
+    ]
+  },
+  "passed": false,
+  "assertions_passed": 2,
+  "assertions_total": 5,
+  "error_message": null,
+  "session_id": null,
+  "session_history_file": null,
+  "run_type": "baseline",
+  "skill_name": "h100-diffusers-kernels"
+}

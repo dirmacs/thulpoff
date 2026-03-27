@@ -1,0 +1,54 @@
+
+Extracted evaluations (YAML):
+model-index:
+- name: OLMo-7B
+  results:
+  - task:
+      type: text-generation
+    dataset:
+      name: Zero-Shot Benchmarks
+      type: benchmark
+    metrics:
+    - name: arc_challenge
+      type: arc_challenge
+      value: 46.5
+    - name: arc_easy
+      type: arc_easy
+      value: 70.5
+    - name: boolq
+      type: boolq
+      value: 74.2
+    - name: copa
+      type: copa
+      value: 85.0
+    - name: hellaswag
+      type: hellaswag
+      value: 77.6
+    - name: openbookqa
+      type: openbookqa
+      value: 48.6
+    - name: piqa
+      type: piqa
+      value: 77.3
+    - name: sciq
+      type: sciq
+      value: 93.7
+    - name: winogrande
+      type: winogrande
+      value: 69.9
+    - name: '**Core tasks average**'
+      type: '**core_tasks_average**'
+      value: 71.5
+    - name: truthfulQA (MC2)
+      type: truthfulqa_(mc2)
+      value: 33.0
+    - name: MMLU (5 shot MC)
+      type: mmlu_(5_shot_mc)
+      value: 30.8
+    - name: '**Full average**'
+      type: '**full_average**'
+      value: 59.3
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+

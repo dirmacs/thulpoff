@@ -1,0 +1,101 @@
+batch_id,run_number,model,timestamp,passed,assertions_passed,assertions_total,metrics_count,benchmarks_found,tokens,conversation_span_ms,tool_calls,tool_errors,mcp_calls,mcp_errors,execute_calls,execute_errors,error_message
+2025_11_28_15_04,1,claude-haiku-4-5,2025-11-28T15:04:18.867332,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",107152,34155.87,7,1,1,0,6,1,
+2025_11_28_15_04,2,claude-haiku-4-5,2025-11-28T15:04:56.442264,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",75066,29217.44,6,0,0,0,6,0,
+2025_11_28_15_04,3,claude-haiku-4-5,2025-11-28T15:05:29.311824,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",47222,26094.78,4,0,0,0,4,0,
+2025_11_28_15_04,4,claude-haiku-4-5,2025-11-28T15:05:59.219381,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",44153,15810.31,4,0,0,0,4,0,
+2025_11_28_15_04,5,claude-haiku-4-5,2025-11-28T15:06:16.375760,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",64503,27406.68,5,0,0,0,5,0,
+2025_11_28_15_04,6,claude-haiku-4-5,2025-11-28T15:06:47.835545,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",33614,13362.03,3,0,0,0,3,0,
+2025_11_28_15_04,7,claude-haiku-4-5,2025-11-28T15:07:05.075714,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",70357,17672.07,5,0,1,0,4,0,
+2025_11_28_15_04,8,claude-haiku-4-5,2025-11-28T15:07:23.957579,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",106289,38411.71,8,0,0,0,8,0,
+2025_11_28_15_04,9,claude-haiku-4-5,2025-11-28T15:08:06.275494,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",64365,26954.59,5,0,0,0,5,0,
+2025_11_28_15_04,10,claude-haiku-4-5,2025-11-28T15:08:42.098334,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",86794,24734.14,6,0,1,0,5,0,
+2025_11_28_15_10,1,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:10:01.989982,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",56952,9069.35,5,0,1,0,4,0,
+2025_11_28_15_10,2,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:10:17.332941,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",91146,22380.93,7,0,1,0,6,0,
+2025_11_28_15_10,3,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:10:43.519456,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",134513,19667.13,10,0,1,0,9,0,
+2025_11_28_15_10,4,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:11:11.964521,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",110285,14141.98,8,1,1,0,7,1,
+2025_11_28_15_10,5,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:11:27.457484,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",123195,22540.99,9,0,1,0,8,0,
+2025_11_28_15_10,6,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:11:53.803187,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",77663,20418.55,6,0,1,0,5,0,
+2025_11_28_15_10,7,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:12:22.393265,False,1,11,0,,72957,10947.59,6,0,1,0,5,0,Missing or empty 'model-index' key
+2025_11_28_15_10,8,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:12:39.838458,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72851,10981.8,6,0,1,0,5,0,
+2025_11_28_15_10,9,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:12:54.778260,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",176208,30761.04,12,1,1,0,11,1,
+2025_11_28_15_10,10,moonshotai/Kimi-K2-Instruct-0905-groq,2025-11-28T15:13:29.163330,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",87278,14909.04,7,0,1,0,6,0,
+2025_11_28_15_15,1,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:15:00.872842,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",73098,30784.72,6,0,1,0,5,0,
+2025_11_28_15_15,2,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:15:40.249564,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",103489,32910.56,8,0,1,0,7,0,
+2025_11_28_15_15,3,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:16:16.765808,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",54962,25764.11,5,0,1,0,4,0,
+2025_11_28_15_15,4,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:16:51.560757,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",114906,36324.93,12,1,0,0,12,1,
+2025_11_28_15_15,5,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:17:34.281770,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",102769,29115.04,9,0,1,0,8,0,
+2025_11_28_15_15,6,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:18:12.157850,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",111018,42729.64,8,0,1,0,7,0,
+2025_11_28_15_15,7,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:18:58.678953,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",167455,44202.41,12,1,1,0,11,1,
+2025_11_28_15_15,8,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:19:54.421458,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",253499,81059.66,15,2,1,0,14,2,
+2025_11_28_15_15,9,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:21:22.157454,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",60416,32418.91,6,0,0,0,6,0,
+2025_11_28_15_15,10,moonshotai/Kimi-K2-Instruct-0905-together,2025-11-28T15:21:58.328158,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",35529,17615.06,4,0,0,0,4,0,
+2025_11_28_15_23,1,gpt-5-mini,2025-11-28T15:23:07.615208,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",73401,28356.9,8,0,0,0,8,0,
+2025_11_28_15_23,2,gpt-5-mini,2025-11-28T15:23:40.187121,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",39720,26155.41,5,0,0,0,5,0,
+2025_11_28_15_23,3,gpt-5-mini,2025-11-28T15:24:09.609736,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",67780,23065.74,7,0,0,0,7,0,
+2025_11_28_15_23,4,gpt-5-mini,2025-11-28T15:24:36.414831,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",40210,29244.4,5,0,0,0,5,0,
+2025_11_28_15_23,5,gpt-5-mini,2025-11-28T15:25:09.455500,False,1,11,0,,57608,19128.7,6,0,1,0,5,0,Missing or empty 'model-index' key
+2025_11_28_15_23,6,gpt-5-mini,2025-11-28T15:25:29.812781,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72662,24321.2,8,0,0,0,8,0,
+2025_11_28_15_23,7,gpt-5-mini,2025-11-28T15:25:57.927085,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",74903,25925.9,8,0,0,0,8,0,
+2025_11_28_15_23,8,gpt-5-mini,2025-11-28T15:26:32.930552,False,10,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",25412,20490.24,4,0,0,0,4,0,Missing source or source URL
+2025_11_28_15_23,9,gpt-5-mini,2025-11-28T15:26:57.250328,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72947,38312.21,8,0,0,0,8,0,
+2025_11_28_15_23,10,gpt-5-mini,2025-11-28T15:27:39.426530,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72772,25898.61,8,0,0,0,8,0,
+2025_11_28_15_28,1,openai/gpt-oss-120b,2025-11-28T15:28:17.116499,False,0,11,0,,40991,6243.4,6,0,1,0,5,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,2,openai/gpt-oss-120b,2025-11-28T15:28:24.593286,False,0,11,0,,2304,1123.7,1,0,0,0,1,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,3,openai/gpt-oss-120b,2025-11-28T15:28:26.933077,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",36388,6749.52,7,0,0,0,7,0,
+2025_11_28_15_28,4,openai/gpt-oss-120b,2025-11-28T15:28:37.766818,True,11,11,9,"boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",139248,23474.58,15,1,0,0,15,1,
+2025_11_28_15_28,5,openai/gpt-oss-120b,2025-11-28T15:29:02.409343,False,0,11,0,,224122,45124.45,20,0,4,0,16,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,6,openai/gpt-oss-120b,2025-11-28T15:29:54.061956,False,0,11,0,,0,401.65,0,0,0,0,0,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,7,openai/gpt-oss-120b,2025-11-28T15:29:55.682619,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",31640,5466.4,6,0,0,0,6,0,
+2025_11_28_15_28,8,openai/gpt-oss-120b,2025-11-28T15:30:02.365781,False,0,11,0,,4690,1973.12,2,0,0,0,2,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,9,openai/gpt-oss-120b,2025-11-28T15:30:05.673769,False,0,11,0,,0,463.7,0,0,0,0,0,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_28,10,openai/gpt-oss-120b,2025-11-28T15:30:07.335972,False,0,11,0,,2298,1102.65,1,0,0,0,1,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_15_32,1,claude-sonnet-4-5,2025-11-28T15:32:02.358560,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",70514,47434.08,5,0,1,0,4,0,
+2025_11_28_15_32,2,claude-sonnet-4-5,2025-11-28T15:32:53.753184,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",280392,148034.33,14,1,1,0,13,1,
+2025_11_28_15_32,3,claude-sonnet-4-5,2025-11-28T15:35:35.876736,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",69005,40538.8,5,0,1,0,4,0,
+2025_11_28_15_32,4,claude-sonnet-4-5,2025-11-28T15:36:25.213750,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",221961,109312.34,12,1,1,0,11,1,
+2025_11_28_15_32,5,claude-sonnet-4-5,2025-11-28T15:38:26.494484,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",84271,46542.85,6,0,1,0,5,0,
+2025_11_28_15_32,6,claude-sonnet-4-5,2025-11-28T15:39:17.010794,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",71982,57221.95,5,0,1,0,4,0,
+2025_11_28_15_32,7,claude-sonnet-4-5,2025-11-28T15:40:20.729619,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",68544,40796.78,5,0,1,0,4,0,
+2025_11_28_15_32,8,claude-sonnet-4-5,2025-11-28T15:41:10.149028,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",36196,41881.64,3,0,0,0,3,0,
+2025_11_28_15_32,9,claude-sonnet-4-5,2025-11-28T15:41:57.977141,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",136768,98803.95,8,0,1,0,7,0,
+2025_11_28_15_32,10,claude-sonnet-4-5,2025-11-28T15:43:39.946455,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",214736,125584.16,11,3,1,0,10,3,
+2025_11_28_15_45,1,MiniMaxAI/MiniMax-M2,2025-11-28T15:45:55.938182,False,2,11,0,,60472,39727.92,5,0,1,0,4,0,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_15_45,2,MiniMaxAI/MiniMax-M2,2025-11-28T15:46:43.464596,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",60646,34389.25,7,0,0,0,7,0,
+2025_11_28_15_45,3,MiniMaxAI/MiniMax-M2,2025-11-28T15:47:20.581894,False,2,11,0,,70826,38252.2,6,0,1,0,5,0,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_15_45,4,MiniMaxAI/MiniMax-M2,2025-11-28T15:48:08.165997,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",165948,92403.98,13,1,1,0,12,1,
+2025_11_28_15_45,5,MiniMaxAI/MiniMax-M2,2025-11-28T15:49:46.629879,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",131618,79057.08,13,0,1,0,12,0,
+2025_11_28_15_45,6,MiniMaxAI/MiniMax-M2,2025-11-28T15:51:15.096255,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",209813,93788.32,17,1,1,0,16,1,
+2025_11_28_15_45,7,MiniMaxAI/MiniMax-M2,2025-11-28T15:52:54.889009,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",699449,204172.11,22,3,1,0,21,3,
+2025_11_28_15_45,8,MiniMaxAI/MiniMax-M2,2025-11-28T15:56:38.664530,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",148343,55423.64,12,2,1,0,11,2,
+2025_11_28_15_45,9,MiniMaxAI/MiniMax-M2,2025-11-28T15:57:37.353739,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",126445,56692.3,11,0,1,0,10,0,
+2025_11_28_15_45,10,MiniMaxAI/MiniMax-M2,2025-11-28T15:58:44.691394,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",91621,58667.95,9,1,0,0,9,1,
+2025_11_28_15_59,1,zai-org/GLM-4.6,2025-11-28T15:59:51.386841,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",63357,33190.22,7,0,0,0,7,0,
+2025_11_28_15_59,2,zai-org/GLM-4.6,2025-11-28T16:00:35.752569,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",131163,52121.94,10,0,3,0,7,0,
+2025_11_28_15_59,3,zai-org/GLM-4.6,2025-11-28T16:01:31.528168,False,10,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",123499,107052.78,9,1,0,0,9,1,Missing source or source URL
+2025_11_28_15_59,4,zai-org/GLM-4.6,2025-11-28T16:03:34.428163,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",58206,37508.76,6,0,0,0,6,0,
+2025_11_28_15_59,5,zai-org/GLM-4.6,2025-11-28T16:04:15.557918,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",88098,31572.81,7,0,1,0,6,0,
+2025_11_28_15_59,6,zai-org/GLM-4.6,2025-11-28T16:04:55.819482,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",54337,26486.35,6,0,0,0,6,0,
+2025_11_28_15_59,7,zai-org/GLM-4.6,2025-11-28T16:05:25.848393,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",167820,56384.21,12,0,1,0,11,0,
+2025_11_28_15_59,8,zai-org/GLM-4.6,2025-11-28T16:06:28.024886,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",87559,30531.12,7,0,1,0,6,0,
+2025_11_28_15_59,9,zai-org/GLM-4.6,2025-11-28T16:07:02.069726,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",36309,18736.3,4,0,0,0,4,0,
+2025_11_28_15_59,10,zai-org/GLM-4.6,2025-11-28T16:07:27.033683,False,0,11,0,,45468,20647.17,4,0,1,0,3,0,Output file 'olmo_7b_evaluations.yaml' not found
+2025_11_28_16_11,1,grok-4-fast-non-reasoning,2025-11-28T16:11:46.082340,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",111287,21367.16,7,0,1,0,6,0,
+2025_11_28_16_11,2,grok-4-fast-non-reasoning,2025-11-28T16:12:10.418935,False,2,11,0,,127686,48066.05,9,3,1,0,8,3,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,3,grok-4-fast-non-reasoning,2025-11-28T16:13:01.425114,False,2,11,0,,257877,81492.22,22,7,1,0,21,7,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,4,grok-4-fast-non-reasoning,2025-11-28T16:14:34.828983,False,2,11,0,,191527,88928.69,12,3,1,0,11,3,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,5,grok-4-fast-non-reasoning,2025-11-28T16:16:10.600609,False,2,11,0,,30766,7252.97,3,0,1,0,2,0,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,6,grok-4-fast-non-reasoning,2025-11-28T16:16:24.080517,False,1,11,0,,41166,92398.36,4,1,1,0,3,1,Missing or empty 'model-index' key
+2025_11_28_16_11,7,grok-4-fast-non-reasoning,2025-11-28T16:18:03.858148,False,2,11,0,,71162,42466.02,6,2,1,0,5,2,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,8,grok-4-fast-non-reasoning,2025-11-28T16:18:56.656273,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",118200,24413.86,9,2,1,0,8,2,
+2025_11_28_16_11,9,grok-4-fast-non-reasoning,2025-11-28T16:19:22.306059,False,2,11,0,,40888,94137.02,4,1,1,0,3,1,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_11,10,grok-4-fast-non-reasoning,2025-11-28T16:21:11.449845,False,2,11,0,,166625,30690.95,13,3,1,0,12,3,"Model name is 'OLMo 7B', expected 'OLMo-7B'"
+2025_11_28_16_21,1,gpt-5.1,2025-11-28T16:21:48.074500,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",116942,51591.88,12,2,0,0,12,2,
+2025_11_28_16_21,2,gpt-5.1,2025-11-28T16:22:48.349377,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",35833,23810.49,4,0,0,0,4,0,
+2025_11_28_16_21,3,gpt-5.1,2025-11-28T16:23:15.998387,False,5,11,0,,87479,57139.25,10,3,0,0,10,3,Missing or empty 'metrics' key
+2025_11_28_16_21,4,gpt-5.1,2025-11-28T16:24:19.301978,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",42374,29812.26,6,1,0,0,6,1,
+2025_11_28_16_21,5,gpt-5.1,2025-11-28T16:24:52.740697,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",68161,31397.77,9,1,0,0,9,1,
+2025_11_28_16_21,6,gpt-5.1,2025-11-28T16:25:27.730811,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",42461,24979.96,6,1,0,0,6,1,
+2025_11_28_16_21,7,gpt-5.1,2025-11-28T16:25:56.550031,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72635,20008.54,8,1,1,0,7,1,
+2025_11_28_16_21,8,gpt-5.1,2025-11-28T16:26:17.732948,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",26351,17592.12,3,0,0,0,3,0,
+2025_11_28_16_21,9,gpt-5.1,2025-11-28T16:26:38.971876,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",72799,26265.16,8,1,1,0,7,1,
+2025_11_28_16_21,10,gpt-5.1,2025-11-28T16:27:13.843574,True,11,11,11,"arc_challenge,arc_easy,boolq,copa,hellaswag,mmlu,openbookqa,piqa,sciq,truthfulqa,winogrande",48890,21835.96,7,1,0,0,7,1,

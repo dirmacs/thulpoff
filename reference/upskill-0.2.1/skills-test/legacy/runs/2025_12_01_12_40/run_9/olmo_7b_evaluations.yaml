@@ -1,0 +1,80 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: multiple-choice-qa
+        dataset: arc_challenge
+        metric:
+          type: accuracy
+          value: 48.5
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: arc_easy
+        metric:
+          type: accuracy
+          value: 65.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: boolq
+        metric:
+          type: accuracy
+          value: 73.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: copa
+        metric:
+          type: accuracy
+          value: 90.0
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: hellaswag
+        metric:
+          type: accuracy
+          value: 76.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: openbookqa
+        metric:
+          type: accuracy
+          value: 50.2
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: piqa
+        metric:
+          type: accuracy
+          value: 78.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: sciq
+        metric:
+          type: accuracy
+          value: 93.8
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: winogrande
+        metric:
+          type: accuracy
+          value: 67.9
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: mmlu
+        metric:
+          type: accuracy
+          value: 28.3
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: multiple-choice-qa
+        dataset: truthfulqa
+        metric:
+          type: accuracy
+          value: 36.0
+        source: https://huggingface.co/allenai/OLMo-7B#readme

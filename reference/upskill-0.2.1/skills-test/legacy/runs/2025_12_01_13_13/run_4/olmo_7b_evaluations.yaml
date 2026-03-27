@@ -1,0 +1,102 @@
+model-index:
+  - name: allenai/OLMo-7B
+    results:
+      - task:
+          name: arc_challenge
+        dataset: ARC Challenge
+        metrics:
+          - type: accuracy
+            value: 48.5
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: arc_easy
+        dataset: ARC Easy
+        metrics:
+          - type: accuracy
+            value: 65.4
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: boolq
+        dataset: BoolQ
+        metrics:
+          - type: accuracy
+            value: 73.4
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: copa
+        dataset: COPA
+        metrics:
+          - type: accuracy
+            value: 90.0
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: hellaswag
+        dataset: HellaSwag
+        metrics:
+          - type: accuracy
+            value: 76.4
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: openbookqa
+        dataset: OpenBookQA
+        metrics:
+          - type: accuracy
+            value: 50.2
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: piqa
+        dataset: PIQA
+        metrics:
+          - type: accuracy
+            value: 78.4
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: sciq
+        dataset: SciQ
+        metrics:
+          - type: accuracy
+            value: 93.8
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: winogrande
+        dataset: Winogrande
+        metrics:
+          - type: accuracy
+            value: 67.9
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: mmlu
+        dataset: MMLU
+        metrics:
+          - type: accuracy
+            value: 28.3
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task:
+          name: truthfulqa
+        dataset: TruthfulQA (MC2)
+        metrics:
+          - type: accuracy
+            value: 36.0
+        source:
+          name: model README
+          url: https://huggingface.co/allenai/OLMo-7B

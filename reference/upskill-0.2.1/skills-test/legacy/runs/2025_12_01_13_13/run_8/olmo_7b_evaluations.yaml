@@ -1,0 +1,146 @@
+model-index:
+  - name: allenai/OLMo-7B
+    results:
+      - task:
+          name: arc_challenge
+          type: question-answering
+        dataset:
+          name: arc_challenge
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 48.5
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: arc_easy
+          type: question-answering
+        dataset:
+          name: arc_easy
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 65.4
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: boolq
+          type: question-answering
+        dataset:
+          name: boolq
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 73.4
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: copa
+          type: common-sense-reasoning
+        dataset:
+          name: copa
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 90.0
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: hellaswag
+          type: multiple-choice
+        dataset:
+          name: hellaswag
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 76.4
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: openbookqa
+          type: question-answering
+        dataset:
+          name: openbookqa
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 50.2
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: piqa
+          type: physical-reasoning
+        dataset:
+          name: piqa
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 78.4
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: sciq
+          type: science-question-answering
+        dataset:
+          name: sciq
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 93.8
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: winogrande
+          type: commonsense-disambiguation
+        dataset:
+          name: winogrande
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 67.9
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: mmlu
+          type: multi-task
+        dataset:
+          name: mmlu
+          split: "5-shot"
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 28.3
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          name: truthfulqa
+          type: question-answering
+        dataset:
+          name: truthfulqa
+        metrics:
+          - name: accuracy
+            type: exact
+            value: 36.0
+        sources:
+          - name: model README
+            url: https://huggingface.co/allenai/OLMo-7B

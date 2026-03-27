@@ -1,0 +1,157 @@
+model-index:
+- name: allenai/OLMo-7B
+  results:
+  - task:
+      type: text-generation
+      name: arc_challenge
+    dataset:
+      type: arc_challenge
+      name: arc_challenge
+      config: default
+    metrics:
+    - type: accuracy
+      value: 48.5
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: arc_easy
+    dataset:
+      type: arc_easy
+      name: arc_easy
+      config: default
+    metrics:
+    - type: accuracy
+      value: 65.4
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: boolq
+    dataset:
+      type: boolq
+      name: boolq
+      config: default
+    metrics:
+    - type: accuracy
+      value: 73.4
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: copa
+    dataset:
+      type: copa
+      name: copa
+      config: default
+    metrics:
+    - type: accuracy
+      value: 90.0
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: hellaswag
+    dataset:
+      type: hellaswag
+      name: hellaswag
+      config: default
+    metrics:
+    - type: accuracy
+      value: 76.4
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: openbookqa
+    dataset:
+      type: openbookqa
+      name: openbookqa
+      config: default
+    metrics:
+    - type: accuracy
+      value: 50.2
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: piqa
+    dataset:
+      type: piqa
+      name: piqa
+      config: default
+    metrics:
+    - type: accuracy
+      value: 78.4
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: sciq
+    dataset:
+      type: sciq
+      name: sciq
+      config: default
+    metrics:
+    - type: accuracy
+      value: 93.8
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: winogrande
+    dataset:
+      type: winogrande
+      name: winogrande
+      config: default
+    metrics:
+    - type: accuracy
+      value: 67.9
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: truthfulqa
+    dataset:
+      type: truthfulqa
+      name: truthfulqa
+      config: default
+    metrics:
+    - type: accuracy
+      value: 36.0
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B
+  - task:
+      type: text-generation
+      name: mmlu
+    dataset:
+      type: mmlu
+      name: mmlu
+      config: default
+    metrics:
+    - type: accuracy
+      value: 28.3
+      name: accuracy
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B

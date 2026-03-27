@@ -1,0 +1,45 @@
+model-index:
+- name: OLMo-7B
+  results:
+  - task:
+      type: text-generation
+    dataset:
+      name: Benchmarks
+      type: benchmark
+    metrics:
+    - name: arc_challenge
+      type: arc_challenge
+      value: 48.5
+    - name: arc_easy
+      type: arc_easy
+      value: 65.4
+    - name: boolq
+      type: boolq
+      value: 73.4
+    - name: copa
+      type: copa
+      value: 90.0
+    - name: hellaswag
+      type: hellaswag
+      value: 76.4
+    - name: openbookqa
+      type: openbookqa
+      value: 50.2
+    - name: piqa
+      type: piqa
+      value: 78.4
+    - name: sciq
+      type: sciq
+      value: 93.8
+    - name: winogrande
+      type: winogrande
+      value: 67.9
+    - name: truthfulqa
+      type: truthfulqa_(mc2)
+      value: 36.0
+    - name: mmlu
+      type: mmlu_(5_shot_mc)
+      value: 28.3
+    source:
+      name: Model README
+      url: https://huggingface.co/allenai/OLMo-7B

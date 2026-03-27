@@ -1,0 +1,45 @@
+model-index:
+- name: OLMo-7B
+  results:
+  - task:
+      type: text-generation
+    dataset:
+      name: Standard Benchmarks
+      type: benchmark
+    metrics:
+    - name: arc_challenge (Llama 7B)
+      type: arc_challenge
+      value: 44.5
+    - name: arc_easy (Llama 7B)
+      type: arc_easy
+      value: 57.0
+    - name: boolq (Llama 7B)
+      type: boolq
+      value: 73.1
+    - name: copa (Llama 7B)
+      type: copa
+      value: 85.0
+    - name: hellaswag (Llama 7B)
+      type: hellaswag
+      value: 74.5
+    - name: openbookqa (Llama 7B)
+      type: openbookqa
+      value: 49.8
+    - name: piqa (Llama 7B)
+      type: piqa
+      value: 76.3
+    - name: sciq (Llama 7B)
+      type: sciq
+      value: 89.5
+    - name: winogrande (Llama 7B)
+      type: winogrande
+      value: 68.2
+    - name: truthfulQA (MC2) (Llama 7B)
+      type: truthfulqa_(mc2)
+      value: 33.9
+    - name: MMLU (5 shot MC) (Llama 7B)
+      type: mmlu_(5_shot_mc)
+      value: 31.5
+    source:
+      name: allenai/OLMo-7B Model README
+      url: https://huggingface.co/allenai/OLMo-7B

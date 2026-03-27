@@ -1,0 +1,45 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: text-generation
+        dataset:
+          name: Core Language Benchmarks
+          type: benchmark_suite
+        metrics:
+          - name: arc_challenge
+            type: accuracy
+            value: 48.5
+          - name: arc_easy
+            type: accuracy
+            value: 65.4
+          - name: boolq
+            type: accuracy
+            value: 73.4
+          - name: copa
+            type: accuracy
+            value: 90
+          - name: hellaswag
+            type: accuracy
+            value: 76.4
+          - name: openbookqa
+            type: accuracy
+            value: 50.2
+          - name: piqa
+            type: accuracy
+            value: 78.4
+          - name: sciq
+            type: accuracy
+            value: 93.8
+          - name: winogrande
+            type: accuracy
+            value: 67.9
+          - name: mmlu
+            type: accuracy
+            value: 28.3
+          - name: truthfulqa
+            type: mc2
+            value: 36.0
+        source:
+          name: OLMo 7B Model Card
+          url: https://huggingface.co/allenai/OLMo-7B

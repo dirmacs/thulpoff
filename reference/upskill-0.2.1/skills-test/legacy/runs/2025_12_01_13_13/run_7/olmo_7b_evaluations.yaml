@@ -1,0 +1,123 @@
+model-index:
+  - name: "OLMo 7B evaluations (reported)"
+    results:
+      - task:
+          name: arc_challenge
+        dataset:
+          name: ARC Challenge
+        metric:
+          name: accuracy
+          value: 48.5
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: arc_easy
+        dataset:
+          name: ARC Easy
+        metric:
+          name: accuracy
+          value: 65.4
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: boolq
+        dataset:
+          name: BoolQ
+        metric:
+          name: accuracy
+          value: 73.4
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: copa
+        dataset:
+          name: COPA
+        metric:
+          name: accuracy
+          value: 90.0
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: hellaswag
+        dataset:
+          name: HellaSwag
+        metric:
+          name: accuracy
+          value: 76.4
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: openbookqa
+        dataset:
+          name: OpenBookQA
+        metric:
+          name: accuracy
+          value: 50.2
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: piqa
+        dataset:
+          name: PIQA
+        metric:
+          name: accuracy
+          value: 78.4
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: sciq
+        dataset:
+          name: SciQ
+        metric:
+          name: accuracy
+          value: 93.8
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: winogrande
+        dataset:
+          name: Winogrande
+        metric:
+          name: accuracy
+          value: 67.9
+        split: test
+        config: zero-shot
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: mmlu
+        dataset:
+          name: MMLU
+        metric:
+          name: accuracy
+          value: 28.3
+        split: validation
+        config: "5-shot (multiple choice)"
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"
+
+      - task:
+          name: truthfulqa
+        dataset:
+          name: TruthfulQA (MC2)
+        metric:
+          name: accuracy
+          value: 36.0
+        split: test
+        config: multiple-choice
+        source: "https://huggingface.co/allenai/OLMo-7B#evaluation"

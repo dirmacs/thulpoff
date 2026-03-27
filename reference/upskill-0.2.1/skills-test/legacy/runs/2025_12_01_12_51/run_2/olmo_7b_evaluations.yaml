@@ -1,0 +1,64 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: text-generation
+        dataset:
+          name: Multiple Benchmarks
+          type: benchmark
+        metrics:
+          - name: arc_challenge
+            type: accuracy
+            value: 48.5
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: arc_easy
+            type: accuracy
+            value: 65.4
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: boolq
+            type: accuracy
+            value: 73.4
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: copa
+            type: accuracy
+            value: 90
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: hellaswag
+            type: accuracy
+            value: 76.4
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: openbookqa
+            type: accuracy
+            value: 50.2
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: piqa
+            type: accuracy
+            value: 78.4
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: sciq
+            type: accuracy
+            value: 93.8
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: winogrande
+            type: accuracy
+            value: 67.9
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: mmlu
+            type: accuracy
+            value: 28.3
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B
+          - name: truthfulqa
+            type: mc2
+            value: 36.0
+            source:
+              url: https://huggingface.co/allenai/OLMo-7B

@@ -1,0 +1,102 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: text-generation
+        dataset:
+          name: arc_challenge
+        metrics:
+          - name: accuracy
+            type: score
+            value: 48.5
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: arc_easy
+        metrics:
+          - name: accuracy
+            type: score
+            value: 65.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: boolq
+        metrics:
+          - name: accuracy
+            type: score
+            value: 73.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: copa
+        metrics:
+          - name: accuracy
+            type: score
+            value: 90.0
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: hellaswag
+        metrics:
+          - name: accuracy
+            type: score
+            value: 76.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: openbookqa
+        metrics:
+          - name: accuracy
+            type: score
+            value: 50.2
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: piqa
+        metrics:
+          - name: accuracy
+            type: score
+            value: 78.4
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: sciq
+        metrics:
+          - name: accuracy
+            type: score
+            value: 93.8
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: winogrande
+        metrics:
+          - name: accuracy
+            type: score
+            value: 67.9
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: truthfulqa
+        metrics:
+          - name: accuracy
+            type: score
+            value: 36.0
+        source: https://huggingface.co/allenai/OLMo-7B#readme
+      - task:
+          type: text-generation
+        dataset:
+          name: mmlu
+        metrics:
+          - name: accuracy
+            type: score
+            value: 28.3
+        source: https://huggingface.co/allenai/OLMo-7B#readme

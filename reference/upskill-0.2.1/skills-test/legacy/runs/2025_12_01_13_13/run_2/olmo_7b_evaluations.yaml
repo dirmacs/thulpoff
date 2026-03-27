@@ -1,0 +1,123 @@
+model-index:
+  evaluations:
+    - name: arc_challenge
+      task:
+        name: ARC (Challenge)
+      metric:
+        type: accuracy
+        value: 48.5
+      dataset: "ARC Challenge"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: arc_easy
+      task:
+        name: ARC (Easy)
+      metric:
+        type: accuracy
+        value: 65.4
+      dataset: "ARC Easy"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: boolq
+      task:
+        name: BoolQ
+      metric:
+        type: accuracy
+        value: 73.4
+      dataset: "BoolQ"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: copa
+      task:
+        name: COPA
+      metric:
+        type: accuracy
+        value: 90.0
+      dataset: "COPA"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: hellaswag
+      task:
+        name: HellaSwag
+      metric:
+        type: accuracy
+        value: 76.4
+      dataset: "HellaSwag"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: openbookqa
+      task:
+        name: OpenBookQA
+      metric:
+        type: accuracy
+        value: 50.2
+      dataset: "OpenBookQA"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: piqa
+      task:
+        name: PIQA
+      metric:
+        type: accuracy
+        value: 78.4
+      dataset: "PIQA"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: sciq
+      task:
+        name: SciQ
+      metric:
+        type: accuracy
+        value: 93.8
+      dataset: "SciQ"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: winogrande
+      task:
+        name: Winogrande
+      metric:
+        type: accuracy
+        value: 67.9
+      dataset: "Winogrande"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: mmlu
+      task:
+        name: MMLU
+      metric:
+        type: accuracy
+        value: 28.3
+      dataset: "MMLU (5-shot, multiple choice)"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: truthfulqa
+      task:
+        name: TruthfulQA
+      metric:
+        type: accuracy
+        value: 36.0
+      dataset: "TruthfulQA (MC2)"
+      split: test
+      source:
+        type: README
+        url: https://huggingface.co/allenai/OLMo-7B

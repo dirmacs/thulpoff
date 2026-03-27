@@ -1,0 +1,74 @@
+model-index:
+  - name: "OLMo 7B"
+    results:
+      - task:
+          name: "arc_challenge"
+        dataset: "arc_challenge"
+        metrics:
+          - type: "accuracy"
+            value: 48.5
+      - task:
+          name: "arc_easy"
+        dataset: "arc_easy"
+        metrics:
+          - type: "accuracy"
+            value: 65.4
+      - task:
+          name: "boolq"
+        dataset: "boolq"
+        metrics:
+          - type: "accuracy"
+            value: 73.4
+      - task:
+          name: "copa"
+        dataset: "copa"
+        metrics:
+          - type: "accuracy"
+            value: 90.0
+      - task:
+          name: "hellaswag"
+        dataset: "hellaswag"
+        metrics:
+          - type: "accuracy"
+            value: 76.4
+      - task:
+          name: "openbookqa"
+        dataset: "openbookqa"
+        metrics:
+          - type: "accuracy"
+            value: 50.2
+      - task:
+          name: "piqa"
+        dataset: "piqa"
+        metrics:
+          - type: "accuracy"
+            value: 78.4
+      - task:
+          name: "sciq"
+        dataset: "sciq"
+        metrics:
+          - type: "accuracy"
+            value: 93.8
+      - task:
+          name: "winogrande"
+        dataset: "winogrande"
+        metrics:
+          - type: "accuracy"
+            value: 67.9
+      - task:
+          name: "mmlu"
+        dataset: "mmlu"
+        metrics:
+          - type: "accuracy"
+            value: 28.3
+      - task:
+          name: "truthfulqa"
+        dataset: "truthfulqa"
+        metrics:
+          - type: "accuracy"
+            value: 36.0
+    # Source attribution: extracted from the model README table
+    sources:
+      - name: "Model README"
+        url: "https://huggingface.co/allenai/OLMo-7B"
+        description: "Core model evaluation table in the model README (allenai/OLMo-7B)."

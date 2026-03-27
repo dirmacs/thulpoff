@@ -1,0 +1,145 @@
+model-index:
+  - name: OLMo 7B
+    results:
+      - task:
+          type: text-generation
+        dataset:
+          name: ARC Challenge
+          type: arc_challenge
+        metrics:
+          - name: ARC Challenge
+            type: arc_challenge
+            value: 48.5
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: ARC Easy
+          type: arc_easy
+        metrics:
+          - name: ARC Easy
+            type: arc_easy
+            value: 65.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: BoolQ
+          type: boolq
+        metrics:
+          - name: BoolQ
+            type: boolq
+            value: 73.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: COPA
+          type: copa
+        metrics:
+          - name: COPA
+            type: copa
+            value: 90.0
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: HellaSwag
+          type: hellaswag
+        metrics:
+          - name: HellaSwag
+            type: hellaswag
+            value: 76.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: OpenBookQA
+          type: openbookqa
+        metrics:
+          - name: OpenBookQA
+            type: openbookqa
+            value: 50.2
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: PIQA
+          type: piqa
+        metrics:
+          - name: PIQA
+            type: piqa
+            value: 78.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: SciQ
+          type: sciq
+        metrics:
+          - name: SciQ
+            type: sciq
+            value: 93.8
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: WinoGrande
+          type: winogrande
+        metrics:
+          - name: WinoGrande
+            type: winogrande
+            value: 67.9
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: MMLU
+          type: mmlu
+        metrics:
+          - name: MMLU (5-shot)
+            type: mmlu
+            value: 28.3
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+
+      - task:
+          type: text-generation
+        dataset:
+          name: TruthfulQA
+          type: truthfulqa
+        metrics:
+          - name: TruthfulQA (MC2)
+            type: truthfulqa
+            value: 36.0
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B

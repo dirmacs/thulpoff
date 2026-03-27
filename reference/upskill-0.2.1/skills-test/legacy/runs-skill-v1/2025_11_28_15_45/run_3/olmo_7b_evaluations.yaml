@@ -1,0 +1,75 @@
+model-index:
+- name: OLMo 7B
+  results:
+  - task:
+      type: text-generation
+    dataset:
+      name: Benchmark Evaluations
+      type: benchmark
+    metrics:
+    - name: arc_challenge
+      type: arc_challenge
+      value: 48.5
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: arc_easy
+      type: arc_easy
+      value: 65.4
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: boolq
+      type: boolq
+      value: 73.4
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: copa
+      type: copa
+      value: 90.0
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: hellaswag
+      type: hellaswag
+      value: 76.4
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: openbookqa
+      type: openbookqa
+      value: 50.2
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: piqa
+      type: piqa
+      value: 78.4
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: sciq
+      type: sciq
+      value: 93.8
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: winogrande
+      type: winogrande
+      value: 67.9
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: mmlu
+      type: mmlu
+      value: 28.3
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B
+    - name: truthfulqa
+      type: truthfulqa
+      value: 36.0
+      source:
+        name: Model README
+        url: https://huggingface.co/allenai/OLMo-7B

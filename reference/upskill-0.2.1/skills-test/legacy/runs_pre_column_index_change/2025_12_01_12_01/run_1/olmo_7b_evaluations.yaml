@@ -1,0 +1,91 @@
+model-index:
+  - name: allenai/OLMo-7B
+    results:
+      - task: question_answering
+        dataset: arc_challenge
+        metrics:
+          - type: accuracy
+            value: 48.5
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: question_answering
+        dataset: arc_easy
+        metrics:
+          - type: accuracy
+            value: 65.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: question_answering
+        dataset: boolq
+        metrics:
+          - type: accuracy
+            value: 73.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: commonsense_reasoning
+        dataset: copa
+        metrics:
+          - type: accuracy
+            value: 90.0
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: commonsense_reasoning
+        dataset: hellaswag
+        metrics:
+          - type: accuracy
+            value: 76.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: question_answering
+        dataset: openbookqa
+        metrics:
+          - type: accuracy
+            value: 50.2
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: commonsense_physics
+        dataset: piqa
+        metrics:
+          - type: accuracy
+            value: 78.4
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: science_question_answering
+        dataset: sciq
+        metrics:
+          - type: accuracy
+            value: 93.8
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: coreference_resolution
+        dataset: winogrande
+        metrics:
+          - type: accuracy
+            value: 67.9
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: knowledge_and_reasoning
+        dataset: mmlu
+        metrics:
+          - type: accuracy
+            value: 28.3
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
+      - task: truthfulness
+        dataset: truthfulqa
+        metrics:
+          - type: accuracy
+            value: 36.0
+        source:
+          name: Model README
+          url: https://huggingface.co/allenai/OLMo-7B
