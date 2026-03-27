@@ -60,6 +60,14 @@ enum Commands {
         #[arg(long, default_value = "./skills")]
         dir: PathBuf,
     },
+    /// View evaluation run history
+    Runs {
+        /// Skill name to show runs for
+        skill: String,
+        /// Base directory for run history
+        #[arg(long, default_value = ".")]
+        dir: PathBuf,
+    },
 }
 
 fn create_provider(provider: Provider) -> Result<Arc<dyn LlmProvider>, String> {
@@ -93,6 +101,9 @@ async fn main() {
         }
         Commands::List { dir } => {
             cmd_list(&dir)
+        }
+        Commands::Runs { skill, dir } => {
+            cmd_runs(&skill, &dir)
         }
     };
 
@@ -252,6 +263,30 @@ fn cmd_list(dir: &Path) -> Result<(), String> {
 
     if !found {
         println!("(no skills found)");
+    }
+
+    Ok(())
+}
+
+fn cmd_runs(skill_name: &str, dir: &Path) -> Result<(), String> {
+    let runs = thulpoff_engine::history::list_runs(dir, skill_name)
+        .map_err(|e| format!("Failed to read runs: {}", e))?;
+
+    if runs.is_empty() {
+        println!("No runs found for '{}'", skill_name);
+        return Ok(());
+    }
+
+    println!("{:<22} {:>6} {:>7} {:>8} {}", "TIMESTAMP", "PASS", "TOTAL", "SCORE", "MODEL");
+    println!("{}", "-".repeat(65));
+    for run in &runs {
+        println!("{:<22} {:>4}/{:<4} {:>7.0}% {}",
+            &run.timestamp[..19],
+            run.passed,
+            run.tests,
+            run.score * 100.0,
+            run.model,
+        );
     }
 
     Ok(())

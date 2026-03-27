@@ -10,5 +10,6 @@ mod evaluation;
 mod refinement;
 
 pub use generation::GenerationEngine;
-pub use evaluation::EvaluationEngine;
+pub use evaluation::{EvaluationEngine, BaselineComparison};
+pub use evaluation::history;
 pub use refinement::RefinementEngine;
