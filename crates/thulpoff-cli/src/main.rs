@@ -4,7 +4,7 @@ use std::sync::Arc;
 use clap::{Parser, Subcommand, ValueEnum};
 use thulpoff_core::{GeneratedSkill, TeacherSession, TestCase, TokenUsage, LlmProvider};
 use thulpoff_engine::{GenerationEngine, EvaluationEngine, RefinementEngine};
-use thulpoff_provider::{AnthropicProvider, NimProvider};
+use thulpoff_provider::{AnthropicProvider, NimProvider, OpenAiProvider};
 
 #[derive(Parser)]
 #[command(name = "thulpoff")]
@@ -15,6 +15,10 @@ struct Cli {
     #[arg(long, value_enum, default_value = "nim", global = true)]
     provider: Provider,
 
+    /// Custom API base URL (for local models: Ollama, llama.cpp, vLLM)
+    #[arg(long, global = true)]
+    base_url: Option<String>,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -23,6 +27,8 @@ struct Cli {
 enum Provider {
     Anthropic,
     Nim,
+    Openai,
+    Ollama,
 }
 
 #[derive(Subcommand)]
@@ -70,7 +76,7 @@ enum Commands {
     },
 }
 
-fn create_provider(provider: Provider) -> Result<Arc<dyn LlmProvider>, String> {
+fn create_provider(provider: Provider, base_url: Option<&str>) -> Result<Arc<dyn LlmProvider>, String> {
     match provider {
         Provider::Anthropic => {
             AnthropicProvider::from_env()
@@ -82,6 +88,25 @@ fn create_provider(provider: Provider) -> Result<Arc<dyn LlmProvider>, String> {
                 .map(|p| Arc::new(p) as Arc<dyn LlmProvider>)
                 .map_err(|e| format!("Failed to create NIM provider: {}", e))
         }
+        Provider::Openai => {
+            if let Some(url) = base_url {
+                let key = std::env::var("OPENAI_API_KEY").unwrap_or_else(|_| "local".to_string());
+                Ok(Arc::new(OpenAiProvider::with_base_url(key, url.to_string())) as Arc<dyn LlmProvider>)
+            } else {
+                OpenAiProvider::from_env()
+                    .map(|p| Arc::new(p) as Arc<dyn LlmProvider>)
+                    .map_err(|e| format!("Failed to create OpenAI provider: {}", e))
+            }
+        }
+        Provider::Ollama => {
+            let p = if let Some(url) = base_url {
+                OpenAiProvider::with_base_url("ollama".to_string(), url.to_string())
+                    .with_name("ollama")
+            } else {
+                OpenAiProvider::ollama()
+            };
+            Ok(Arc::new(p) as Arc<dyn LlmProvider>)
+        }
     }
 }
 
@@ -89,15 +114,16 @@ fn create_provider(provider: Provider) -> Result<Arc<dyn LlmProvider>, String> {
 async fn main() {
     let cli = Cli::parse();
 
+    let base_url = cli.base_url.as_deref();
     let result = match cli.command {
         Commands::Generate { task, model, output } => {
-            cmd_generate(cli.provider, &task, &model, &output).await
+            cmd_generate(cli.provider, base_url, &task, &model, &output).await
         }
         Commands::Eval { skill, model } => {
-            cmd_eval(cli.provider, &skill, &model).await
+            cmd_eval(cli.provider, base_url, &skill, &model).await
         }
         Commands::Refine { skill, model } => {
-            cmd_refine(cli.provider, &skill, &model).await
+            cmd_refine(cli.provider, base_url, &skill, &model).await
         }
         Commands::List { dir } => {
             cmd_list(&dir)
@@ -115,11 +141,12 @@ async fn main() {
 
 async fn cmd_generate(
     provider: Provider,
+    base_url: Option<&str>,
     task: &str,
     model: &str,
     output_dir: &Path,
 ) -> Result<(), String> {
-    let llm = create_provider(provider)?;
+    let llm = create_provider(provider, base_url)?;
     let engine = GenerationEngine::new(llm);
 
     let session = TeacherSession {
@@ -156,10 +183,11 @@ async fn cmd_generate(
 
 async fn cmd_eval(
     provider: Provider,
+    base_url: Option<&str>,
     skill_path: &Path,
     model: &str,
 ) -> Result<(), String> {
-    let llm = create_provider(provider)?;
+    let llm = create_provider(provider, base_url)?;
     let engine = EvaluationEngine::new(llm);
 
     let skill = load_skill(skill_path)?;
@@ -193,10 +221,11 @@ async fn cmd_eval(
 
 async fn cmd_refine(
     provider: Provider,
+    base_url: Option<&str>,
     skill_path: &Path,
     model: &str,
 ) -> Result<(), String> {
-    let llm = create_provider(provider)?;
+    let llm = create_provider(provider, base_url)?;
     let eval_engine = EvaluationEngine::new(llm.clone());
     let refine_engine = RefinementEngine::new(llm);
 
