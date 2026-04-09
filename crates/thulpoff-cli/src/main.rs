@@ -263,31 +263,26 @@ fn cmd_list(dir: &Path) -> Result<(), String> {
         return Ok(());
     }
 
-    let entries = std::fs::read_dir(dir)
-        .map_err(|e| format!("Failed to read directory: {}", e))?;
+    // Use thulp-skill-files SkillLoader for discovery (shared with thulp)
+    let loader_config = thulp_skill_files::SkillLoaderConfig {
+        project_dir: Some(dir.to_path_buf()),
+        personal_dir: None,
+        enterprise_dir: None,
+        plugin_dirs: Vec::new(),
+        max_depth: 3,
+    };
+    let loader = thulp_skill_files::SkillLoader::new(loader_config);
+    let skills = loader.load_all().map_err(|e| format!("Failed to load skills: {}", e))?;
 
-    let mut found = false;
+    let found = !skills.is_empty();
     println!("{:<25} {}", "SKILL", "DESCRIPTION");
     println!("{}", "-".repeat(60));
 
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_dir() {
-            let skill_md = path.join("SKILL.md");
-            if skill_md.exists() {
-                found = true;
-                let name = path.file_name()
-                    .and_then(|n| n.to_str())
-                    .unwrap_or("?");
-
-                let desc = std::fs::read_to_string(&skill_md)
-                    .ok()
-                    .and_then(|c| extract_description(&c))
-                    .unwrap_or_else(|| "(no description)".into());
-
-                println!("{:<25} {}", name, truncate(&desc, 35));
-            }
-        }
+    for skill in &skills {
+        let name = skill.qualified_name();
+        let desc = skill.file.frontmatter.description.clone()
+            .unwrap_or_else(|| "(no description)".into());
+        println!("{:<25} {}", name, truncate(&desc, 35));
     }
 
     if !found {
@@ -341,62 +336,28 @@ fn format_skill_md(skill: &GeneratedSkill) -> String {
 }
 
 fn load_skill(path: &Path) -> Result<GeneratedSkill, String> {
-    let content = std::fs::read_to_string(path)
-        .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
+    // Use thulp-skill-files for parsing (shared infrastructure with thulp)
+    let skill_file = thulp_skill_files::SkillFile::parse(path)
+        .map_err(|e| format!("Failed to parse {}: {}", path.display(), e))?;
 
-    let (frontmatter_str, body) = if content.starts_with("---") {
-        let rest = &content[3..];
-        if let Some(end) = rest.find("---") {
-            (rest[..end].trim().to_string(), rest[end + 3..].trim().to_string())
-        } else {
-            (String::new(), content.clone())
-        }
-    } else {
-        (String::new(), content.clone())
-    };
+    let name = skill_file.effective_name().to_string();
+    let description = skill_file.frontmatter.description.clone().unwrap_or_default();
 
-    let frontmatter: serde_json::Value = if !frontmatter_str.is_empty() {
-        serde_json::from_str(&frontmatter_str).unwrap_or(serde_json::json!({}))
-    } else {
-        serde_json::json!({})
-    };
+    // Frontmatter as JSON value for thulpoff compatibility
+    let frontmatter = serde_json::to_value(&skill_file.frontmatter)
+        .unwrap_or(serde_json::json!({}));
 
-    let name = frontmatter.get("name")
-        .and_then(|v| v.as_str())
-        .or_else(|| path.file_stem().and_then(|s| s.to_str()))
-        .unwrap_or("unknown")
-        .to_string();
-
-    let description = extract_description(&content)
-        .unwrap_or_default();
-
-    // Extract test cases from ```json block after "## Test Cases"
-    let test_cases = extract_test_cases(&body);
+    // Test cases are thulpoff-specific (## Test Cases block) — extract from content
+    let test_cases = extract_test_cases(&skill_file.content);
 
     Ok(GeneratedSkill {
         name,
         description,
         frontmatter,
-        content: body.clone(),
+        content: skill_file.content.clone(),
         test_cases,
         source_session: None,
     })
-}
-
-fn extract_description(content: &str) -> Option<String> {
-    // Look for first non-heading, non-empty line after frontmatter
-    let body = if content.starts_with("---") {
-        content.find("---").and_then(|i| {
-            content[i + 3..].find("---").map(|j| &content[i + 3 + j + 3..])
-        }).unwrap_or(content)
-    } else {
-        content
-    };
-
-    body.lines()
-        .map(|l| l.trim())
-        .find(|l| !l.is_empty() && !l.starts_with('#'))
-        .map(|l| l.to_string())
 }
 
 fn extract_test_cases(body: &str) -> Vec<TestCase> {
@@ -445,10 +406,17 @@ mod tests {
     }
 
     #[test]
-    fn extract_description_from_markdown() {
-        let content = "---\nname: foo\n---\n\n# Foo\n\nThis is the description.\n\n## Steps\n";
-        let desc = extract_description(content).unwrap();
-        assert_eq!(desc, "This is the description.");
+    fn load_skill_extracts_description_via_thulp() {
+        let dir = std::env::temp_dir().join("thulpoff-desc-test");
+        let skill_dir = dir.join("foo");
+        std::fs::create_dir_all(&skill_dir).unwrap();
+        std::fs::write(
+            skill_dir.join("SKILL.md"),
+            "---\nname: foo\ndescription: This is the description.\n---\n\n# Foo\n\nContent here.\n",
+        ).unwrap();
+        let skill = load_skill(&skill_dir.join("SKILL.md")).unwrap();
+        assert_eq!(skill.description, "This is the description.");
+        std::fs::remove_dir_all(&dir).ok();
     }
 
     #[test]
