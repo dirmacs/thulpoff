@@ -4,10 +4,12 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Skill generation, evaluation, and refinement engine"
+readme = "README.md"
+repository.workspace = true
 
 [dependencies]
-thulpoff-core = { path = "../thulpoff-core" }
-thulpoff-provider = { path = "../thulpoff-provider" }
+thulpoff-core = { version = "0.1.0", path = "../thulpoff-core" }
+thulpoff-provider = { version = "0.1.0", path = "../thulpoff-provider" }
 async-trait = "0.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

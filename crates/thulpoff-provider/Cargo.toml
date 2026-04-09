@@ -4,9 +4,11 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "LLM provider implementations for thulpoff"
+readme = "README.md"
+repository.workspace = true
 
 [dependencies]
-thulpoff-core = { path = "../thulpoff-core" }
+thulpoff-core = { version = "0.1.0", path = "../thulpoff-core" }
 async-trait = "0.1"
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
