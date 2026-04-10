@@ -2,9 +2,56 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use clap::{Parser, Subcommand, ValueEnum};
+use serde::{Deserialize, Serialize};
 use thulpoff_core::{GeneratedSkill, TeacherSession, TestCase, TokenUsage, LlmProvider};
 use thulpoff_engine::{GenerationEngine, EvaluationEngine, RefinementEngine};
 use thulpoff_provider::{AnthropicProvider, NimProvider, OpenAiProvider};
+
+/// Persistent configuration at ~/.config/thulpoff/config.toml
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
+struct Config {
+    /// Default provider (nim, anthropic, openai, ollama)
+    provider: String,
+    /// Default teacher model
+    teacher_model: String,
+    /// Default student/eval model
+    eval_model: String,
+    /// Default output directory for generated skills
+    output_dir: String,
+    /// Runs directory for evaluation history
+    runs_dir: String,
+    /// Custom base URL for OpenAI-compatible endpoints
+    base_url: Option<String>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            provider: "nim".to_string(),
+            teacher_model: "claude-opus-4-6".to_string(),
+            eval_model: "mistralai/mistral-small-24b-instruct-2501".to_string(),
+            output_dir: ".".to_string(),
+            runs_dir: ".thulpoff/runs".to_string(),
+            base_url: None,
+        }
+    }
+}
+
+impl Config {
+    fn load() -> Self {
+        let path = dirs_next::config_dir()
+            .unwrap_or_else(|| PathBuf::from("~/.config"))
+            .join("thulpoff")
+            .join("config.toml");
+        if path.exists() {
+            let content = std::fs::read_to_string(&path).unwrap_or_default();
+            toml::from_str(&content).unwrap_or_default()
+        } else {
+            Self::default()
+        }
+    }
+}
 
 #[derive(Parser)]
 #[command(name = "thulpoff")]
@@ -60,6 +107,8 @@ enum Commands {
         #[arg(long, default_value = "claude-opus-4-6")]
         model: String,
     },
+    /// Show or initialize configuration
+    Config,
     /// List available skills in a directory
     List {
         /// Directory to scan for SKILL.md files
@@ -124,6 +173,9 @@ async fn main() {
         }
         Commands::Refine { skill, model } => {
             cmd_refine(cli.provider, base_url, &skill, &model).await
+        }
+        Commands::Config => {
+            cmd_config()
         }
         Commands::List { dir } => {
             cmd_list(&dir)
@@ -376,6 +428,35 @@ fn extract_test_cases(body: &str) -> Vec<TestCase> {
     vec![]
 }
 
+fn cmd_config() -> Result<(), String> {
+    let config = Config::load();
+    let config_path = dirs_next::config_dir()
+        .unwrap_or_else(|| PathBuf::from("~/.config"))
+        .join("thulpoff")
+        .join("config.toml");
+
+    println!("Config: {}", config_path.display());
+    println!();
+    println!("  provider:      {}", config.provider);
+    println!("  teacher_model: {}", config.teacher_model);
+    println!("  eval_model:    {}", config.eval_model);
+    println!("  output_dir:    {}", config.output_dir);
+    println!("  runs_dir:      {}", config.runs_dir);
+    if let Some(ref url) = config.base_url {
+        println!("  base_url:      {}", url);
+    }
+
+    if !config_path.exists() {
+        println!();
+        println!("No config file found. Create one with:");
+        println!("  mkdir -p {}", config_path.parent().unwrap().display());
+        let default_toml = toml::to_string_pretty(&Config::default()).unwrap_or_default();
+        println!("  cat > {} << 'EOF'\n{}\nEOF", config_path.display(), default_toml);
+    }
+
+    Ok(())
+}
+
 fn truncate(s: &str, max: usize) -> String {
     if s.len() <= max { s.to_string() } else { format!("{}...", &s[..max]) }
 }
@@ -461,5 +542,37 @@ Do stuff.
         assert!(skill.test_cases.is_empty());
 
         std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn config_default_values() {
+        let config = Config::default();
+        assert_eq!(config.provider, "nim");
+        assert_eq!(config.teacher_model, "claude-opus-4-6");
+        assert!(config.eval_model.contains("mistral"));
+        assert_eq!(config.output_dir, ".");
+        assert!(config.base_url.is_none());
+    }
+
+    #[test]
+    fn config_serialization_roundtrip() {
+        let config = Config {
+            provider: "anthropic".to_string(),
+            teacher_model: "claude-sonnet-4-6".to_string(),
+            eval_model: "llama3.2:latest".to_string(),
+            output_dir: "./skills".to_string(),
+            runs_dir: "./runs".to_string(),
+            base_url: Some("http://localhost:11434/v1".to_string()),
+        };
+        let toml_str = toml::to_string(&config).unwrap();
+        let parsed: Config = toml::from_str(&toml_str).unwrap();
+        assert_eq!(parsed.provider, "anthropic");
+        assert_eq!(parsed.base_url.unwrap(), "http://localhost:11434/v1");
+    }
+
+    #[test]
+    fn config_load_returns_default_when_missing() {
+        let config = Config::load();
+        assert_eq!(config.provider, "nim"); // default
     }
 }
