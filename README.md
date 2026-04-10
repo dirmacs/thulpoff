@@ -96,6 +96,7 @@ thulpoff list --dir ./skills/
 |----------|--------|------|
 | `anthropic` | Claude Opus, Sonnet, Haiku | `ANTHROPIC_API_KEY` |
 | `nim` | Mistral, Llama, Nemotron via NVIDIA NIM | `NVIDIA_API_KEY` |
+| `openai` | GPT-4, GPT-3.5, local models via OpenAI-compatible API | `OPENAI_API_KEY` |
 
 ## Architecture
 
