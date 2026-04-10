@@ -133,6 +133,27 @@ cargo clippy --workspace -- -D warnings
 | [ares](https://github.com/dirmacs/ares) | Agentic retrieval-enhanced server |
 | [pawan](https://github.com/dirmacs/pawan) | CLI coding agent |
 | [eruka](https://eruka.dirmacs.com) | Context intelligence engine |
+| [dstack](https://github.com/dirmacs/dstack) | Development stack — memory, deploy, autonomous loops |
+
+### Tip: pair with ralph-loop for high-signal distillation
+
+Autonomous agent sessions driven by the [ralph-loop pattern](https://github.com/dirmacs/dstack/tree/main/plugin/skills/ralph-loop)
+from dstack produce exceptionally rich session traces — hours of
+continuous tool use, hundreds of commits, dozens of distinct sub-problems
+solved. These are ideal inputs for thulpoff's GenerationEngine because:
+
+1. The teacher model has already done the hard work (not a toy prompt)
+2. The action traces contain real tool patterns, not synthetic examples
+3. Test cases can be extracted from the commits themselves
+4. Baseline comparison reveals the exact skill value delta
+
+```bash
+# After a ralph-loop session completed
+pawan distill --refine --student-model mistral-small-24b
+```
+
+Pawan's distill command wraps thulpoff's full distill→eval→refine→eval
+loop, using the ralph session as the teacher trace.
 
 ## Inspiration
 
