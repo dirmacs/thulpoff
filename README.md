@@ -43,7 +43,7 @@ Small models can match large models on specific tasks — if given the right ins
 4. **Student evaluation** — smaller models are scored with the skill
 5. **Refinement** — failures feed back to improve the skill
 
-No manual prompt engineering. The teacher teaches, the student learns, the skill improves.
+The teacher teaches, the student learns, the skill improves.
 
 ## Workspace (4 crates)
 
